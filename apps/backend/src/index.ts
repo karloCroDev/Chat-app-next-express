@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import redis from "redis";
-import { User } from "@repo/types";
 import { Foo } from "@/src/type";
+import { prisma } from "@/src/lib/prisma";
 
 const app = express();
 app.use(cors());
@@ -11,12 +11,8 @@ app.use(cors());
 //   url:
 // })
 
-app.get("/api/health", (req, res) => {
-  const user: User = {
-    id: "1",
-    name: "John",
-    email: "john@example.com",
-  };
+app.get("/api/health", async (req, res) => {
+  const user = await prisma.user.findFirst();
   res.json({ status: "ok", user });
 });
 

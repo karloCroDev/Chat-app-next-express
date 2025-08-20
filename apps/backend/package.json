@@ -4,10 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^6.14.0",
     "@repo/types": "*",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "mongoose": "^8.17.2"
+    "mongoose": "^8.17.2",
+    "prisma": "^6.14.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
