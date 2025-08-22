@@ -1,6 +1,5 @@
 import Image, { type ImageProps } from "next/image";
-import { Button } from "@/components/button";
-import type { User } from "@repo/types";
+// import type { User } from "@repo/types";
 
 type Props = Omit<ImageProps, "src"> & {
   srcLight: string;
@@ -17,11 +16,11 @@ const ThemeImage = ({ srcLight, srcDark, ...rest }: Props) => {
 };
 
 export default async function Home() {
-  const { username, email }: User = await fetch(
-    "http://localhost:4000/api/health"
-  )
-    .then((res) => res.json())
-    .then((data) => data.user);
+  // const { username, email }: User = await fetch(
+  //   "http://localhost:4000/api/health"
+  // )
+  //   .then((res) => res.json())
+  //   .then((data) => data.user);
 
   return (
     <div>
@@ -39,9 +38,7 @@ export default async function Home() {
             Get started by editing <code>apps/web/app/page.tsx</code>
           </li>
           <li>Save and see your changes instantly.</li>
-          <li>
-            Hello, {username} {email}
-          </li>
+          <li>Hello</li>
         </ol>
 
         <div>
@@ -66,7 +63,6 @@ export default async function Home() {
             Read our docs
           </a>
         </div>
-        <Button>Open alert</Button>
       </main>
       <footer>
         <a
