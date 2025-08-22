@@ -12,8 +12,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { RegisterArgs, registerSchema } from "@repo/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export const SignupForm = () => {
+  const {
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    reset,
+    register,
+    watch,
+  } = useForm<RegisterArgs>({
+    resolver: zodResolver(registerSchema),
+  });
+
+  const values = watch();
+  const onSubmit = async (data: RegisterArgs) => {
+    console.log(data);
+  };
   return (
     <div className="flex flex-col gap-6 ">
       <Card className="w-96">
@@ -24,31 +42,44 @@ export const SignupForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <Label htmlFor="email">Username</Label>
+                <Input
+                  {...register("username")}
+                  type="text"
+                  placeholder="Enter your username"
+                />
+              </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  id="email"
+                  {...register("email")}
                   type="email"
                   placeholder="m@example.com"
-                  required
                 />
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  {...register("password")}
+                  type="password"
+                  placeholder="*******"
+                />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Forgot your password</Label>
-                </div>
-                <Input id="password" type="password" required />
-              </div>
+
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={
+                    isSubmitting ||
+                    !(values.username && values.email && values.password)
+                  }
+                >
                   Login
                 </Button>
                 <Button variant="outline" className="w-full">

@@ -5,16 +5,18 @@
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.14.0",
-    "@repo/types": "*",
     "@types/jsonwebtoken": "^9.0.10",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.2",
-    "prisma": "^6.14.0"
+    "prisma": "^6.14.0",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
+    "@repo/schemas": "*",
+    "@repo/types": "*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",

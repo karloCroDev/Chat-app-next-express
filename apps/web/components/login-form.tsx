@@ -12,8 +12,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { LoginArgs, loginSchema } from "@repo/schemas";
 
 export const LoginForm = () => {
+  const {
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    reset,
+    register,
+    watch,
+  } = useForm<LoginArgs>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginArgs) => {};
+
+  const values = watch();
   return (
     <div className="flex flex-col gap-6">
       <Card className="w-96 ">
@@ -24,7 +41,7 @@ export const LoginForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -32,23 +49,32 @@ export const LoginForm = () => {
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
+                  {...register("email", {
+                    required: "Email is required",
+                  })}
                 />
+                {errors.email && <p>{errors.email.message}</p>}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    href="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input type="password" {...register("password")} />
+
+                {errors.password && <p>{errors.password.message}</p>}
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting || !(values.email && values.password)}
+                >
                   Login
                 </Button>
                 <Button variant="outline" className="w-full">

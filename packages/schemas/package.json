@@ -1,8 +1,12 @@
 {
-  "name": "schemas",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "name": "@repo/schemas",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared types between backend and frontend",
+  "main": "index.ts",
+  "files": [
+    "index.ts"
+  ],
   "dependencies": {
     "zod": "^4.0.17"
   }
