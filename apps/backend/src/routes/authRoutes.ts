@@ -10,6 +10,7 @@ import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";
 import jwt from "jsonwebtoken";
+import { error } from "console";
 
 export const authRoutes = Router();
 
@@ -53,7 +54,7 @@ authRoutes.post("/register", async (req, res) => {
   }
 });
 
-authRoutes.post("/login", (req, res) => {
+authRoutes.post("/login", async (req, res) => {
   try {
     const data: LoginArgs = req.body;
     const validateData = loginSchema.safeParse(data);
@@ -63,6 +64,34 @@ authRoutes.post("/login", (req, res) => {
         errors: zodErrorDetecter(validateData.error),
       });
     }
-  } catch (error) {}
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: validateData.data.email,
+      },
+    });
+
+    if (!user) return res.status(400).json({ error: "Invalid email" });
+
+    const passwordIsValid = bcrypt.compareSync(
+      validateData.data.password,
+      user.password
+    );
+
+    if (!passwordIsValid)
+      return res.status(400).json({ error: "Invalid password" });
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    return res.json({ token });
+  } catch (error) {
+    console.error(error);
+  }
   res.send("sss");
 });
