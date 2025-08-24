@@ -15,8 +15,13 @@ import Link from "next/link";
 import { RegisterArgs, registerSchema } from "@repo/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRegister } from "@/app/hooks/auth";
+import { useRouter } from "next/navigation";
+import { withReactQueryProvider } from "@/lib/config/react-query";
 
-export const SignupForm = () => {
+export const SignupForm = withReactQueryProvider(() => {
+  const router = useRouter();
+
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -29,8 +34,15 @@ export const SignupForm = () => {
   });
 
   const values = watch();
+
+  const { mutate } = useRegister();
+
   const onSubmit = async (data: RegisterArgs) => {
-    console.log(data);
+    mutate(data, {
+      onSuccess: () => {
+        router.push("/hello");
+      },
+    });
   };
   return (
     <div className="flex flex-col gap-6 ">
@@ -98,4 +110,4 @@ export const SignupForm = () => {
       </Card>
     </div>
   );
-};
+});

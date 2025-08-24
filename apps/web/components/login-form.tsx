@@ -15,8 +15,12 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LoginArgs, loginSchema } from "@repo/schemas";
+import { useLogin } from "@/app/hooks/auth";
+import { withReactQueryProvider } from "@/lib/config/react-query";
+import { useRouter } from "next/navigation";
 
-export const LoginForm = () => {
+export const LoginForm = withReactQueryProvider(() => {
+  const router = useRouter();
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -28,7 +32,14 @@ export const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginArgs) => {};
+  const { mutate } = useLogin();
+  const onSubmit = async (data: LoginArgs) => {
+    mutate(data, {
+      onSuccess: () => {
+        // router.push("/hello");
+      },
+    });
+  };
 
   const values = watch();
   return (
@@ -96,4 +107,4 @@ export const LoginForm = () => {
       </Card>
     </div>
   );
-};
+});

@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import redis from "redis";
@@ -6,8 +7,14 @@ import { authRoutes } from "@/src/routes/authRoutes";
 import { authMiddleware } from "@/src/middleware/authMiddleware";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/auth", authRoutes);

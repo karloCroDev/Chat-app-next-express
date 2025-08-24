@@ -1,20 +1,11 @@
-import express from "express";
-import { Router, Request, Response } from "express";
-import {
-  registerSchema,
-  RegisterArgs,
-  LoginArgs,
-  loginSchema,
-} from "@repo/schemas";
-import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
-import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 import { prisma } from "@/src/config/prisma";
-import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
 import jwt from "jsonwebtoken";
 
 export async function session(req: Request, res: Response) {
   try {
-    const token = req.cookies.auth_token;
+    const token = req.cookies.token;
+
     if (!token)
       return res
         .status(401)
