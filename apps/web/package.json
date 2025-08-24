@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-query": "^5.85.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.540.0",
@@ -26,9 +27,9 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@repo/types": "*",
-    "@repo/schemas": "*",
     "@repo/eslint-config": "*",
+    "@repo/schemas": "*",
+    "@repo/types": "*",
     "@repo/typescript-config": "*",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/node": "^22.15.3",
