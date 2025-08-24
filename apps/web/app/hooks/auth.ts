@@ -5,14 +5,14 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import { session, login, register } from "@/lib/data/auth";
+import { clientSession, login, register } from "@/lib/data/auth";
 import { LoginArgs, RegisterArgs } from "@repo/schemas";
 import { cache } from "react";
 
 export const useSession = () => {
   return useQuery({
     queryKey: ["session"],
-    queryFn: () => cache(session),
+    queryFn: clientSession,
     staleTime: 5 * 60 * 1000,
   });
 };

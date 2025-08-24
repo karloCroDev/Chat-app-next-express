@@ -1,11 +1,11 @@
 import { LoginArgs } from "@repo/schemas";
 
-export async function session() {
+export async function clientSession() {
   const response = await fetch("http://localhost:4000/auth/session", {
     method: "GET",
-    credentials: "include", // 👈 this is required
+    credentials: "include",
   });
-  console.log(response);
+
   if (!response.ok) {
     throw new Error("Failed to fetch session");
   }
