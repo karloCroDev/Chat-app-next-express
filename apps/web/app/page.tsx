@@ -1,5 +1,5 @@
 import Image, { type ImageProps } from "next/image";
-import { User } from "@repo/types";
+// import { User } from "@repo/types";
 
 type Props = Omit<ImageProps, "src"> & {
   srcLight: string;
@@ -16,11 +16,11 @@ const ThemeImage = ({ srcLight, srcDark, ...rest }: Props) => {
 };
 
 export default async function Home() {
-  const { username, email }: User = await fetch(
-    "http://localhost:4000/api/health"
-  )
-    .then((res) => res.json())
-    .then((data) => data.user);
+  // const { username, email }: User = await fetch(
+  //   "http://localhost:4000/api/health"
+  // )
+  //   .then((res) => res.json())
+  //   .then((data) => data.user);
 
   return (
     <div>

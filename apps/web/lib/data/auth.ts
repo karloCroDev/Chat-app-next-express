@@ -1,5 +1,9 @@
 import { LoginArgs } from "@repo/schemas";
-import { SessionSuccessResponse } from "@repo/types";
+import {
+  SessionSuccessResponse,
+  LoginResponse,
+  RegisterResponse,
+} from "@repo/types";
 
 export async function clientSession(): Promise<SessionSuccessResponse | null> {
   try {
@@ -17,7 +21,7 @@ export async function clientSession(): Promise<SessionSuccessResponse | null> {
   }
 }
 
-export async function login(data: LoginArgs) {
+export async function login(data: LoginArgs): Promise<LoginResponse> {
   try {
     const response = await fetch("http://localhost:4000/auth/login", {
       method: "POST",
@@ -27,16 +31,14 @@ export async function login(data: LoginArgs) {
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error("Failed to log in");
-    }
+
     return await response.json();
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 }
 
-export async function register(data: LoginArgs) {
+export async function register(data: LoginArgs): Promise<RegisterResponse> {
   try {
     const response = await fetch("http://localhost:4000/auth/register", {
       method: "POST",
@@ -46,9 +48,7 @@ export async function register(data: LoginArgs) {
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error("Failed to log in");
-    }
+
     return await response.json();
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");

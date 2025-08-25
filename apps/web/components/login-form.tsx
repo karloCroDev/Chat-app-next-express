@@ -25,7 +25,6 @@ export const LoginForm = withReactQueryProvider(() => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-    reset,
     register,
     watch,
   } = useForm<LoginArgs>({
@@ -35,8 +34,24 @@ export const LoginForm = withReactQueryProvider(() => {
   const { mutate } = useLogin();
   const onSubmit = async (data: LoginArgs) => {
     mutate(data, {
-      onSuccess: () => {
-        // router.push("/hello");
+      onSuccess: ({ errors, success, message }) => {
+        if (success) return router.push("/hello");
+
+        setError("root", {
+          message,
+        });
+
+        if (!errors) return;
+
+        // KARLO ja msm da ja ovo sa servera ne trebam handleati ali za svaki slucaj! (Nije lose da je ti)
+        if (errors.email)
+          setError("email", {
+            message: errors.email,
+          });
+        if (errors.password)
+          setError("password", {
+            message: errors.password,
+          });
       },
     });
   };
@@ -64,7 +79,9 @@ export const LoginForm = withReactQueryProvider(() => {
                     required: "Email is required",
                   })}
                 />
-                {errors.email && <p>{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -78,7 +95,12 @@ export const LoginForm = withReactQueryProvider(() => {
                 </div>
                 <Input type="password" {...register("password")} />
 
-                {errors.password && <p>{errors.password.message}</p>}
+                {errors.password && (
+                  <p className="text-red-500">{errors.password.message}</p>
+                )}
+                {errors.root && (
+                  <p className="text-red-500">{errors.root.message}</p>
+                )}
               </div>
               <div className="flex flex-col gap-3">
                 <Button

@@ -1,10 +1,9 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
-import redis from "redis";
-import { prisma } from "@/src/config/prisma";
 import { authRoutes } from "@/src/routes/authRoutes";
 import { authMiddleware } from "@/src/middleware/authMiddleware";
+import { adminMiddleware } from "@/src/middleware/adminMiddleware";
 
 const app = express();
 app.use(
@@ -19,6 +18,9 @@ app.use(cookieParser());
 // Routes
 app.use("/auth", authRoutes);
 app.get("/protected", authMiddleware, (req, res) => {
+  res.json({ message: "This is a protected route" });
+});
+app.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
 

@@ -8,6 +8,7 @@ import {
 import { clientSession, login, logout, register } from "@/lib/data/auth";
 import { LoginArgs, RegisterArgs } from "@repo/schemas";
 import { cache } from "react";
+import { LoginResponse, RegisterResponse } from "@repo/types";
 
 export const useSession = () => {
   return useQuery({
@@ -18,15 +19,7 @@ export const useSession = () => {
 };
 
 export const useLogin = (
-  options?: UseMutationOptions<
-    {
-      success: boolean;
-      message?: string;
-      errors: Record<keyof RegisterArgs, string>;
-    },
-    Error,
-    LoginArgs
-  >
+  options?: UseMutationOptions<LoginResponse, Error, LoginArgs>
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -41,15 +34,7 @@ export const useLogin = (
 };
 
 export const useRegister = (
-  options?: UseMutationOptions<
-    {
-      success: boolean;
-      message?: string;
-      errors: Record<keyof RegisterArgs, string>;
-    },
-    Error,
-    RegisterArgs
-  >
+  options?: UseMutationOptions<RegisterResponse, Error, RegisterArgs>
 ) => {
   const queryClient = useQueryClient();
   return useMutation({

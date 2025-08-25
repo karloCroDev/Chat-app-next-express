@@ -39,8 +39,25 @@ export const SignupForm = withReactQueryProvider(() => {
 
   const onSubmit = async (data: RegisterArgs) => {
     mutate(data, {
-      onSuccess: () => {
-        router.push("/hello");
+      onSuccess: ({ errors, success, message }) => {
+        if (success) return router.push("/hello");
+        console.log(data);
+        setError("root", {
+          message,
+        });
+
+        if (!errors) return;
+
+        // KARLO ja msm da ja ovo sa servera ne trebam handleati ali za svaki slucaj! (Nije lose da je to sada tu)
+        if (errors.email)
+          setError("email", {
+            message: errors.email,
+          });
+
+        if (errors.password)
+          setError("password", {
+            message: errors.password,
+          });
       },
     });
   };

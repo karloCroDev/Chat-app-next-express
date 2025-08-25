@@ -10,7 +10,20 @@ import * as React from "react";
 export const Test = withReactQueryProvider(() => {
   const { data } = useSession();
 
+  console.log("Client session:", data);
   const { mutate } = useLogout();
+
+  React.useEffect(() => {
+    const fetchExample = async () => {
+      const res = await fetch("http://localhost:4000/protected", {
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      console.log(data);
+    };
+    fetchExample();
+  }, []);
 
   return (
     <Button
