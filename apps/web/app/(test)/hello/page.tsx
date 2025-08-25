@@ -16,7 +16,7 @@ export default async function Page() {
 
   const someProtectedData = await fetch("http://localhost:4000/protected", {
     headers: {
-      Authorization: `Bearer ${token}`,
+      cookie: `token=${token}`,
     },
   }).then((res) => res.json());
 

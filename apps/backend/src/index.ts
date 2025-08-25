@@ -21,7 +21,7 @@ app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
 app.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
-  res.json({ message: "This is a protected route" });
+  res.json({ message: "This is a ADMIN protected route" });
 });
 
 app.listen(4000, () => {

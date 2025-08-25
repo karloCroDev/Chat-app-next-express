@@ -36,6 +36,7 @@ export async function login(req: Request, res: Response) {
     generateTokenAndSetCookie({
       res,
       userId: user.id,
+      role: user.role,
     });
 
     return res.status(200).json({

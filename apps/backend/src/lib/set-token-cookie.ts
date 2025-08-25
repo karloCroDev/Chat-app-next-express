@@ -4,11 +4,13 @@ import { Response } from "express";
 export async function generateTokenAndSetCookie({
   res,
   userId,
+  role,
 }: {
   res: Response;
   userId: string;
+  role: string;
 }) {
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET as string, {
+  const token = jwt.sign({ userId, role }, process.env.JWT_SECRET as string, {
     expiresIn: "7d",
   });
 

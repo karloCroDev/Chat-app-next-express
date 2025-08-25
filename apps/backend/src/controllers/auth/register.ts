@@ -42,6 +42,7 @@ export async function register(req: Request, res: Response) {
     generateTokenAndSetCookie({
       res,
       userId: user.id,
+      role: user.role,
     });
 
     return res.json({

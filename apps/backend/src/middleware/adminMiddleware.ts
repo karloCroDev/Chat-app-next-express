@@ -14,6 +14,7 @@ export function adminMiddleware(
 ) {
   const { user } = req;
 
+  console.log(user);
   if (!user || user.role !== "ADMIN") {
     return res.status(400).json({ message: "Forbidden: Admins only" });
   }
