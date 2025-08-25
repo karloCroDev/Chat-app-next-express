@@ -1,12 +1,17 @@
 // External packages
+import { serverSession } from "@/lib/actions/auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { IoArrowBackOutline } from "react-icons/io5";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await serverSession();
+
+  if (user) redirect("/hello");
   return (
     <>
       <Link

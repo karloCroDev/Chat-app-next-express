@@ -17,6 +17,14 @@ export async function session(req: Request, res: Response) {
 
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     if (!user)
@@ -24,7 +32,9 @@ export async function session(req: Request, res: Response) {
         success: false,
         message: "User is not logged in",
       });
-    res.status(200).json({ user });
+    res
+      .status(200)
+      .json({ ...user, message: "User is logged in", success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error", success: false });

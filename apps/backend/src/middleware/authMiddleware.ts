@@ -11,7 +11,7 @@ export function authMiddleware(
     return res.status(400).json({ message: "No token has been provided" });
 
   jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
-    if (err) return res.status(400).json({ message: "Invalid token" });
+    if (err) return res.status(400);
     //@ts-ignore
     req.user = user;
     next();
