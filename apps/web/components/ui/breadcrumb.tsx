@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils/class-merger";
+import Link, { LinkProps } from "next/link";
 
 function Breadcrumb({ ...props }: React.ComponentProps<"nav">) {
   return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />;
@@ -31,21 +32,27 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   );
 }
 
+// Karlo: Handling the hydration error
 function BreadcrumbLink({
   asChild,
   className,
+  nextLinkProps,
+  children,
   ...props
-}: React.ComponentProps<"a"> & {
+}: Omit<React.ComponentProps<"a">, "href"> & {
   asChild?: boolean;
+  nextLinkProps: LinkProps;
 }) {
-  const Comp = asChild ? Slot : "a";
-
-  return (
-    <Comp
+  return asChild ? (
+    <Slot
       data-slot="breadcrumb-link"
       className={cn("hover:text-foreground transition-colors", className)}
       {...props}
-    />
+    >
+      <Link {...nextLinkProps}>{children} </Link>
+    </Slot>
+  ) : (
+    <Link {...nextLinkProps}>{children} </Link>
   );
 }
 
