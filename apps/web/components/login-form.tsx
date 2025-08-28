@@ -35,7 +35,7 @@ export const LoginForm = withReactQueryProvider(() => {
   const onSubmit = async (data: LoginArgs) => {
     mutate(data, {
       onSuccess: ({ errors, success, message }) => {
-        if (success) return router.push("/hello");
+        if (success) return router.push("/chat");
 
         setError("root", {
           message,

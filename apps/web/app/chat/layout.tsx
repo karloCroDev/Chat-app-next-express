@@ -1,12 +1,4 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -14,12 +6,18 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { BreadcrumbMapping } from "@/components/breadcrumb-mapping";
+import { serverSession } from "@/lib/actions/auth";
+import { redirect } from "next/navigation";
 
-export default function ChatLayout({
+export default async function ChatLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await serverSession();
+
+  if (!user) redirect("/login");
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -32,7 +30,7 @@ export default function ChatLayout({
           />
           <BreadcrumbMapping />
         </header>
-        <main>{children}</main>
+        <main className="px-6 py-4">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

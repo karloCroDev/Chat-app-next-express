@@ -6,10 +6,9 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export const BreadcrumbMapping = () => {
   const pathname = usePathname();
@@ -27,7 +26,7 @@ export const BreadcrumbMapping = () => {
           const href = "/" + splittedPathname.slice(0, index + 1).join("/");
           return (
             <div key={path} className="flex items-center gap-4">
-              <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbItem>
                 <BreadcrumbLink
                   nextLinkProps={{
                     href,
@@ -37,9 +36,7 @@ export const BreadcrumbMapping = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              {splittedPathname.length - 1 !== index && (
-                <BreadcrumbSeparator className="hidden md:block" />
-              )}
+              {splittedPathname.length - 1 !== index && <BreadcrumbSeparator />}
             </div>
           );
         }, "")}
