@@ -30,7 +30,7 @@ export default async function ChatLayout({
           />
           <BreadcrumbMapping />
         </header>
-        <main className="px-6 py-4">{children}</main>
+        <main className="px-8 py-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
