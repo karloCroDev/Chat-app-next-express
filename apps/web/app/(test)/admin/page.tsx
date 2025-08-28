@@ -1,4 +1,3 @@
-// External packages
 import { serverSession } from "@/lib/actions/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
