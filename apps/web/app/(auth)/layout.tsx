@@ -11,7 +11,7 @@ export default async function AuthLayout({
 }) {
   const user = await serverSession();
 
-  if (user) redirect("/hello");
+  if (user) redirect("/chat");
   return (
     <>
       <Link

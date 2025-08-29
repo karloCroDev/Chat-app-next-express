@@ -26,7 +26,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogout } from "@/app/hooks/auth";
+import { useLogout } from "@/hooks/auth";
 import { withReactQueryProvider } from "@/lib/config/react-query";
 import { IRevalidateTag } from "@/lib/actions/utils";
 import Link from "next/link";
@@ -94,11 +94,7 @@ export const NavUser = withReactQueryProvider(
 
               <DropdownMenuItem
                 onClick={() => {
-                  mutate(undefined, {
-                    onSuccess: () => {
-                      IRevalidateTag("session");
-                    },
-                  });
+                  mutate(undefined, {});
                 }}
               >
                 <LogOut />

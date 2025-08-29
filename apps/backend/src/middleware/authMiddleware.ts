@@ -6,8 +6,6 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  // const token = req.headers["authorization"]?.split(" ")[1];
-
   const token: string | undefined = req.cookies.token;
   if (!token)
     return res.status(400).json({ message: "No token has been provided" });
@@ -16,6 +14,8 @@ export function authMiddleware(
     if (err) return res.status(400);
     //@ts-ignore
     req.user = user;
+
+    console.log("USERR", user);
     next();
   });
 }

@@ -15,7 +15,7 @@ import Link from "next/link";
 import { RegisterArgs, registerSchema } from "@repo/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRegister } from "@/app/hooks/auth";
+import { useRegister } from "@/hooks/auth";
 import { useRouter } from "next/navigation";
 import { withReactQueryProvider } from "@/lib/config/react-query";
 
@@ -24,9 +24,8 @@ export const SignupForm = withReactQueryProvider(() => {
 
   const {
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
     setError,
-    reset,
     register,
     watch,
   } = useForm<RegisterArgs>({
@@ -109,10 +108,10 @@ export const SignupForm = withReactQueryProvider(() => {
                     !(values.username && values.email && values.password)
                   }
                 >
-                  Login
+                  Signup
                 </Button>
                 <Button variant="outline" className="w-full">
-                  Login with Google
+                  Signup with Google
                 </Button>
               </div>
             </div>

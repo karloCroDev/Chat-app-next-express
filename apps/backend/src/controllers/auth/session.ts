@@ -17,10 +17,13 @@ export async function session(req: Request, res: Response) {
 
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
+
       select: {
         id: true,
         username: true,
         email: true,
+        bio: true,
+        isOnline: true,
         role: true,
         createdAt: true,
         updatedAt: true,

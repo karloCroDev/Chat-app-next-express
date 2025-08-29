@@ -1,4 +1,4 @@
-import { LoginArgs, RegisterArgs } from "@/schemas";
+import { LoginArgs, RegisterArgs } from "@repo/schemas/index";
 
 // Login/Register response
 
@@ -20,6 +20,8 @@ export type User = {
   id: string;
   username: string;
   email: string;
+  image?: string;
+  bio?: string;
   role: "USER" | "ADMIN";
   createdAt: Date;
   updatedAt: Date;

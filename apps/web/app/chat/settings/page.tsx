@@ -1,9 +1,9 @@
 import { SettingsForm } from "@/components/settings-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { serverSession } from "@/lib/actions/auth";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const user = await serverSession();
+
   return (
     <>
       <h1 className="text-4xl font-bold ">Settings</h1>
@@ -11,7 +11,11 @@ export default function SettingsPage() {
         Change your users profile settings
       </p>
 
-      <SettingsForm />
+      <SettingsForm
+        bio={user!.bio}
+        image={user!.image}
+        username={user!.username}
+      />
     </>
   );
 }
