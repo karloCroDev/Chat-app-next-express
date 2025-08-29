@@ -1,6 +1,5 @@
 "use client";
 
-// External packages
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,15 +10,18 @@ import { SettingsArgs, settingsSchema } from "@repo/schemas";
 import { useUpdateUser } from "@/hooks/settings";
 import { withReactQueryProvider } from "@/lib/config/react-query";
 import { IRevalidateTag } from "@/lib/actions/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Controller } from "react-hook-form";
 
 export const SettingsForm: React.FC<SettingsArgs> = withReactQueryProvider(
-  ({ username, bio }) => {
+  ({ username, bio, image }) => {
     const {
       handleSubmit,
       formState: { isDirty, errors },
       reset,
       register,
       setError,
+      control,
     } = useForm<SettingsArgs>({
       resolver: zodResolver(settingsSchema),
     });
@@ -52,14 +54,50 @@ export const SettingsForm: React.FC<SettingsArgs> = withReactQueryProvider(
       });
     };
 
-    console.log(isDirty);
+    const [currImage, setCurrImage] = React.useState<string | null | undefined>(
+      image
+    );
+
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-10 flex flex-col gap-6"
       >
         <div className="self-center text-center">
-          <div className="rounded-full size-36 lg:size-50  border" />
+          <Controller
+            name="image"
+            control={control}
+            render={({ field: { onChange } }) => (
+              <div className="relative">
+                <Label htmlFor="image">
+                  <Avatar className="rounded-full size-36 lg:size-50 border object-cover relative">
+                    {currImage && (
+                      <AvatarImage
+                        src={currImage}
+                        alt={username}
+                        className="object-cover object-center w-full h-full"
+                      />
+                    )}
+
+                    <AvatarFallback className="text-2xl">
+                      {username!.split(" ").map((word) => word[0])}
+                    </AvatarFallback>
+                  </Avatar>
+                </Label>
+                <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target?.files?.[0];
+                    onChange(file || null);
+                    setCurrImage(file ? URL.createObjectURL(file) : null);
+                  }}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+            )}
+          />
           <h4 className="mt-4 font-bold text-2xl">{username}</h4>
           <p>{bio}</p>
         </div>
