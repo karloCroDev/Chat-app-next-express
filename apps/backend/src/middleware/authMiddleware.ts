@@ -15,7 +15,6 @@ export function authMiddleware(
     //@ts-ignore
     req.user = user;
 
-    console.log("USERR", user);
     next();
   });
 }

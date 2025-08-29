@@ -18,10 +18,7 @@ export const settingsSchema = z
       .min(2, "Bio must be at least 2 characters")
       .max(16)
       .or(z.literal("")),
-    image: z
-      .string()
-      .min(2, "Image must be at least 2 characters")
-      .or(z.literal("")),
+    image: z.instanceof(File),
   })
   .partial()
   .refine(
