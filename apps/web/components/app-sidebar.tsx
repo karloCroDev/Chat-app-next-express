@@ -14,6 +14,7 @@ import {
 import { NavUser } from "@/components/nav-user";
 import { serverSession } from "@/lib/actions/auth";
 import { User } from "@repo/types";
+import Link from "next/link";
 
 // This is sample data.
 
@@ -29,7 +30,7 @@ export async function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/chat">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <MessageCircleIcon className="size-4" />
                 </div>
@@ -37,7 +38,7 @@ export async function AppSidebar({
                   <span className="text-base font-bold">KARLOS CHAT</span>
                   <span className="text-xs">Just remember all caps...</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

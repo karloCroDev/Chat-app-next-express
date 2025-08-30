@@ -8,6 +8,7 @@ import {
 import { BreadcrumbMapping } from "@/components/breadcrumb-mapping";
 import { serverSession } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default async function ChatLayout({
   children,
@@ -29,6 +30,9 @@ export default async function ChatLayout({
             className="mr-2 data-[orientation=vertical]:h-4"
           />
           <BreadcrumbMapping />
+          <div className="ml-auto">
+            <ModeToggle />
+          </div>
         </header>
         <main className="relative h-[calc(100%-64px)] w-full">{children}</main>
       </SidebarInset>

@@ -12,6 +12,7 @@ import { withReactQueryProvider } from "@/lib/config/react-query";
 import { IRevalidateTag } from "@/lib/actions/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Controller } from "react-hook-form";
+import { TrashIcon } from "lucide-react";
 
 export const SettingsForm: React.FC<{
   username: string;
@@ -39,6 +40,9 @@ export const SettingsForm: React.FC<{
     if (data.password) formData.append("password", data.password);
     if (data.bio) formData.append("bio", data.bio);
     if (data.image instanceof File) formData.append("image", data.image);
+    if (data.imageUrl) formData.append("imageUrl", data.imageUrl);
+
+    if (image && data.image instanceof File) formData.append("imageUrl", image);
 
     mutate(formData, {
       onSuccess: ({ errors, message, success }) => {
@@ -67,8 +71,6 @@ export const SettingsForm: React.FC<{
     image
   );
 
-  console.log(currImage);
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -80,15 +82,13 @@ export const SettingsForm: React.FC<{
           control={control}
           render={({ field: { onChange } }) => (
             <div className="relative">
-              <Label htmlFor="image">
+              <Label htmlFor="image" className="cursor-pointer">
                 <Avatar className="rounded-full size-36 lg:size-50 border object-cover relative">
-                  {currImage && (
-                    <AvatarImage
-                      src={currImage}
-                      alt={username}
-                      className="object-cover object-center w-full h-full"
-                    />
-                  )}
+                  <AvatarImage
+                    src={currImage ? currImage : undefined} // Passing underfined because of fallback (under condtional rendering without AvatarImage it doesn't work)
+                    alt={username}
+                    className="object-cover object-center w-full h-full"
+                  />
 
                   <AvatarFallback className="text-2xl">
                     {username!.split(" ").map((word) => word[0])}
@@ -101,11 +101,33 @@ export const SettingsForm: React.FC<{
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target?.files?.[0];
+
+                  if (!file) return;
+
                   onChange(file);
-                  setCurrImage(file ? URL.createObjectURL(file) : null);
+                  setCurrImage(URL.createObjectURL(file));
                 }}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
+
+              {currImage && (
+                <Controller
+                  name="imageUrl"
+                  control={control}
+                  render={({ field: { onChange } }) => (
+                    <Button
+                      className="absolute right-2 bottom-2 rounded-full"
+                      variant="secondary"
+                      onClick={() => {
+                        onChange(image);
+                        setCurrImage(null);
+                      }}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  )}
+                />
+              )}
             </div>
           )}
         />

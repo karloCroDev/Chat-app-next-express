@@ -19,6 +19,7 @@ export const settingsSchema = z
       .max(16)
       .or(z.literal("")),
     image: z.instanceof(File).or(z.object()),
+    imageUrl: z.url().or(z.literal("")),
   })
   .partial()
   .refine(
