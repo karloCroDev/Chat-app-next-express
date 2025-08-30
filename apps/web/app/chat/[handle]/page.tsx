@@ -1,4 +1,5 @@
 import { ChatMessage } from "@/components/chat-message";
+import { MessageInput } from "@/components/message-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function DmsPage() {
@@ -15,7 +16,7 @@ export default function DmsPage() {
         <p>Online</p>
       </div>
 
-      <div className="px-8 py-6">
+      <div className="px-8 py-6 flex flex-col gap-4 ">
         <ChatMessage
           hasMessageBeSeen
           variant="outline"
@@ -24,6 +25,8 @@ export default function DmsPage() {
                 deleniti sint quasi labore exercitationem tempora consequuntur soluta
                 repudiandae. Animi, reprehenderi`}
         />
+
+        <MessageInput />
       </div>
     </>
   );

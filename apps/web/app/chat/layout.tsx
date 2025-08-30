@@ -30,7 +30,7 @@ export default async function ChatLayout({
           />
           <BreadcrumbMapping />
         </header>
-        <main>{children}</main>
+        <main className="relative h-[calc(100%-64px)] w-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

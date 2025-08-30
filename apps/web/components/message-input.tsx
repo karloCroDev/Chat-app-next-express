@@ -1,0 +1,69 @@
+"use client";
+
+import * as React from "react";
+import { twMerge } from "tailwind-merge";
+import { Button } from "@/components/ui/button";
+import { FileIcon, SendIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { ResizableTextArea } from "@/components/resizable-textarea";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+
+export const MessageInput: React.FC<React.ComponentPropsWithoutRef<"div">> = ({
+  className,
+  ...rest
+}) => {
+  const [image, setImage] = React.useState<string | null>(null);
+
+  const [file, setFile] = React.useState<File | null>(null); // Send to server
+  const [message, setMessage] = React.useState("");
+  return (
+    <div
+      {...rest}
+      className={twMerge(
+        "flex flex-col border rounded-lg border-foreground absolute bottom-12 left-1/2 -translate-x-1/2 w-96 px-3 py-2",
+        className
+      )}
+    >
+      {image && (
+        <div className="size-20 relative rounded-lg overflow-hidden">
+          <Image
+            src={image}
+            alt="Selected image"
+            className="absolute object-cover"
+            fill
+          />
+        </div>
+      )}
+      <ResizableTextArea
+        placeholder="Enter your message..."
+        onChange={(e) => setMessage(e.target.value)}
+        value={message}
+      />
+      <div className="flex justify-between">
+        <Button variant="outline">
+          <Label htmlFor="image">
+            <FileIcon />
+          </Label>
+        </Button>
+        <Button>
+          <SendIcon />
+        </Button>
+        <Input
+          id="image"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target?.files?.[0];
+
+            if (!file) return;
+
+            setFile(file);
+            setImage(URL.createObjectURL(file));
+          }}
+          className="absolute size-0 opacity-0 cursor-pointer"
+        />
+      </div>
+    </div>
+  );
+};
