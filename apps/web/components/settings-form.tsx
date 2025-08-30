@@ -26,6 +26,7 @@ export const SettingsForm: React.FC<{
     register,
     setError,
     control,
+    watch,
   } = useForm<SettingsArgs>({
     resolver: zodResolver(settingsSchema),
   });
@@ -70,6 +71,8 @@ export const SettingsForm: React.FC<{
   const [currImage, setCurrImage] = React.useState<string | null | undefined>(
     image
   );
+
+  const values = watch();
 
   return (
     <form
@@ -188,7 +191,17 @@ export const SettingsForm: React.FC<{
       </div>
       {message && <p className="mr-auto text-green-500">{message}</p>}
 
-      <Button className="mr-auto" disabled={!isDirty}>
+      <Button
+        className="mr-auto"
+        disabled={
+          !isDirty ||
+          (!values.password &&
+            !values.username &&
+            !values.bio &&
+            !values.image &&
+            !values.imageUrl)
+        }
+      >
         Update info
       </Button>
     </form>

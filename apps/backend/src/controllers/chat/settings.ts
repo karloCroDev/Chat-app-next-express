@@ -14,7 +14,6 @@ export async function settings(req: Request, res: Response) {
 
   const validateData = settingsSchema.safeParse(data);
 
-  console.log(validateData.success);
   if (!validateData.success) {
     return res.json({ errors: zodErrorDetecter(validateData.error) });
   }
@@ -29,6 +28,24 @@ export async function settings(req: Request, res: Response) {
   if (validateData.data.username) payload.username = validateData.data.username;
 
   if (validateData.data.bio) payload.bio = validateData.data.bio;
+
+  if (validateData.data.imageUrl) {
+    try {
+      const key = getKeyFromUrl(validateData.data.imageUrl);
+      const command = new DeleteObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Key: key,
+      });
+
+      const success = await s3.send(command);
+
+      console.log(success);
+
+      payload.image = ""; // Will pass new image if is there in next if statment
+    } catch (error) {
+      throw new Error("Failed to delete the image");
+    }
+  }
 
   if (validateData.data.image && file) {
     try {
@@ -48,31 +65,12 @@ export async function settings(req: Request, res: Response) {
     }
   }
 
-  console.log(validateData.data.imageUrl);
-  if (validateData.data.imageUrl) {
-    try {
-      const key = getKeyFromUrl(validateData.data.imageUrl);
-      const command = new DeleteObjectCommand({
-        Bucket: process.env.AWS_S3_BUCKET_NAME!,
-        Key: key,
-      });
-
-      await s3.send(command);
-
-      console.log("Succeesss");
-    } catch (error) {
-      throw new Error("Failed to delete the image");
-    }
-  }
-
-  if (req.user!.userId) {
-    await prisma.user.update({
-      where: {
-        id: req.user?.userId,
-      },
-      data: payload,
-    });
-  }
+  await prisma.user.update({
+    where: {
+      id: req.user!.userId, // Getting from middleware
+    },
+    data: payload,
+  });
 
   return res.status(200).json({
     success: true,
