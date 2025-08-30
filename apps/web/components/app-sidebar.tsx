@@ -1,4 +1,3 @@
-import * as React from "react";
 import { MessageCircleIcon } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -13,10 +12,17 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
+import { serverSession } from "@/lib/actions/auth";
+import { User } from "@repo/types";
 
 // This is sample data.
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export async function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  user: User;
+}) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -42,9 +48,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser
           user={{
-            name: "shadcn",
-            email: "m@example.com",
-            avatar: "",
+            name: user.username,
+            email: user.email,
+            avatar: user.image || "",
           }}
         />
       </SidebarFooter>

@@ -21,7 +21,7 @@ export const MessageInput: React.FC<React.ComponentPropsWithoutRef<"div">> = ({
     <div
       {...rest}
       className={twMerge(
-        "flex flex-col border rounded-lg border-foreground absolute bottom-12 left-1/2 -translate-x-1/2 w-96 px-3 py-2",
+        "flex flex-col border rounded-lg border-foreground absolute bottom-12 left-1/2 -translate-x-1/2 w-96 lg:w-[600px] px-3 py-2",
         className
       )}
     >

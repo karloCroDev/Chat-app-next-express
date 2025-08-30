@@ -24,7 +24,7 @@ export const ResizableTextArea: React.FC<TextAreaProps> = ({
   return (
     <Textarea
       {...rest}
-      className={twMerge("max-h-28 resize-none w-96 ")}
+      className={twMerge("max-h-28 resize-none", className)}
       ref={textareaRef}
       onChange={(e) => {
         adjustTextareaHeight();
