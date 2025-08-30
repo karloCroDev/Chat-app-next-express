@@ -67,6 +67,8 @@ export const SettingsForm: React.FC<{
     image
   );
 
+  console.log(currImage);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -164,7 +166,9 @@ export const SettingsForm: React.FC<{
       </div>
       {message && <p className="mr-auto text-green-500">{message}</p>}
 
-      <Button className="mr-auto">Update info</Button>
+      <Button className="mr-auto" disabled={!isDirty}>
+        Update info
+      </Button>
     </form>
   );
 });

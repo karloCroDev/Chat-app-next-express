@@ -23,6 +23,7 @@ export async function session(req: Request, res: Response) {
         username: true,
         email: true,
         bio: true,
+        image: true,
         isOnline: true,
         role: true,
         createdAt: true,

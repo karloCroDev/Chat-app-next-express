@@ -10,7 +10,6 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const user = await serverSession();
-
   if (user) redirect("/chat");
   return (
     <>

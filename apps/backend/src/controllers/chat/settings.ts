@@ -4,15 +4,17 @@ import { loginSchema, settingsSchema, SettingsArgs } from "@repo/schemas";
 import { type Response, Request } from "express";
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
-import AWS from "aws-sdk";
 import { s3 } from "@/src/config/aws";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 export async function settings(req: Request, res: Response) {
-  const data: SettingsArgs = req.body;
   const file = req.file;
+  const data: SettingsArgs = { ...req.body, image: file };
 
+  console.log(data);
   const validateData = settingsSchema.safeParse(data);
 
+  console.log(validateData.success);
   if (!validateData.success) {
     return res.json({ errors: zodErrorDetecter(validateData.error) });
   }
@@ -28,14 +30,29 @@ export async function settings(req: Request, res: Response) {
 
   if (validateData.data.bio) payload.bio = validateData.data.bio;
 
-  // if (validateData.data.image) payload.image = validateData.data.image;
+  if (validateData.data.image && file) {
+    const imageName = `${Date.now()}_${file.originalname}`;
+    const command = new PutObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME!,
+      Key: imageName,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+    await s3.send(command);
 
-  await prisma.user.update({
-    where: {
-      id: req.user?.userId,
-    },
-    data: payload,
-  });
+    const imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageName}`;
+
+    payload.image = imageUrl;
+  }
+
+  if (req.user!.userId) {
+    await prisma.user.update({
+      where: {
+        id: req.user?.userId,
+      },
+      data: payload,
+    });
+  }
 
   return res.status(200).json({
     success: true,
