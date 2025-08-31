@@ -11,9 +11,19 @@ export async function listUsers(req: Request, res: Response) {
     return res.status(400);
   }
 
+  const userId = req.user!.userId;
+
   try {
     const users = await prisma.user.findMany({
       where: {
+        id: {
+          not: userId,
+        },
+        FriendRequest: {
+          none: {
+            fromUserId: userId,
+          },
+        },
         OR: [
           {
             username: {
@@ -27,6 +37,7 @@ export async function listUsers(req: Request, res: Response) {
           },
         ],
       },
+
       take: validateData.data.limit,
       skip: validateData.data.searchValue ? 0 : validateData.data.offset,
       select: {

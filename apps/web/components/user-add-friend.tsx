@@ -4,14 +4,17 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { ListUsersResponse } from "@repo/types";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSendRequest } from "@/hooks/sidebar";
 
 export const UserAddFriend: React.FC<ListUsersResponse> = ({
+  id,
   bio,
   image,
   username,
 }) => {
+  const { mutate } = useSendRequest();
+
   return (
     <div className="flex gap-3 items-center ">
       <Avatar className="size-7 rounded">
@@ -28,12 +31,20 @@ export const UserAddFriend: React.FC<ListUsersResponse> = ({
       <div className="flex flex-col">
         <p>{username}</p>
         {bio && (
-          <p className="text-xs text-muted-foreground">Lorem ipsum ...</p>
+          <p className="text-xs text-muted-foreground line-clamp-1">{bio}</p>
         )}
       </div>
 
-      <Button className="ml-auto" size="sm">
-        <PlusIcon className="size-4 " />
+      <Button
+        className="ml-auto"
+        size="sm"
+        onClick={() => {
+          mutate(id);
+
+          console.log("Request sent");
+        }}
+      >
+        <PlusIcon className="size-4" />
       </Button>
     </div>
   );
