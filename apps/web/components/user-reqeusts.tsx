@@ -1,9 +1,11 @@
+"use client ";
+
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
-import Image from "next/image";
 import { IoCheckmarkCircle } from "react-icons/io5";
 
-export const UserSidebar = ({ ...rest }) => {
+export const UserRequests = ({ ...rest }) => {
   return (
     <div className="flex gap-3 items-center ">
       {/* <Image src={} /> */}

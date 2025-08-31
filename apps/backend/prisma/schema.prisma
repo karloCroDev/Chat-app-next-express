@@ -33,8 +33,8 @@ model User {
   FriendRequestSent FriendRequest[] @relation("RequestsSent")
   FriendRequest     FriendRequest[] @relation("RequestsReceived")
 
-  FriendshipSent     Friendship[] @relation("MessageSent")
-  FriendshipReceived Friendship[] @relation("MessageReceived")
+  friendshipSent     Friendship[] @relation("MessageSent")
+  friendshipReceived Friendship[] @relation("MessageReceived")
 
   @@index([id])
   @@index([username])
@@ -48,14 +48,14 @@ enum RequestStatus {
 }
 
 model FriendRequest {
-  id         String        @id @default(cuid())
+  id     String        @id @default(cuid())
+  status RequestStatus @default(PENDING)
+
+  toUserId String
+  toUser   User   @relation("RequestsReceived", fields: [toUserId], references: [id])
+
   fromUserId String
-  toUserId   String
-  status     RequestStatus @default(PENDING)
-
-  toUser User @relation("RequestsReceived", fields: [toUserId], references: [id])
-
-  fromUser User @relation("RequestsSent", fields: [fromUserId], references: [id])
+  fromUser   User   @relation("RequestsSent", fields: [fromUserId], references: [id])
 }
 
 enum MessageStatus {

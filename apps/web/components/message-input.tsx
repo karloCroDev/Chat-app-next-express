@@ -3,7 +3,7 @@
 import * as React from "react";
 import { twMerge } from "tailwind-merge";
 import { Button } from "@/components/ui/button";
-import { FileIcon, SendIcon } from "lucide-react";
+import { FileIcon, PlusIcon, SendIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { ResizableTextArea } from "@/components/resizable-textarea";
 import { Input } from "@/components/ui/input";

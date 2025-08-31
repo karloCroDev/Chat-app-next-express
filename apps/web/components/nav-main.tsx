@@ -6,7 +6,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
@@ -19,7 +18,9 @@ import { ChevronRight, SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { FriendSidebar } from "@/components/friend-sidebar";
-import { UserSidebar } from "@/components/user-sidebar";
+import { UserRequests } from "@/components/user-reqeusts";
+import { UserAddFriend } from "@/components/user-add-friend";
+import { AddFriendsMapping } from "@/components/add-friends-mapping";
 
 export function NavMain() {
   return (
@@ -64,18 +65,7 @@ export function NavMain() {
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu className="mt-4">
-                    <SidebarMenuItem>
-                      <div className="flex items-center gap-4">
-                        <Input />
-                        <SearchIcon className="size-6" />
-                      </div>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-
-                  <SidebarMenu className="mt-2">
-                    <SidebarMenuItem>
-                      <UserSidebar />
-                    </SidebarMenuItem>
+                    <AddFriendsMapping />
                   </SidebarMenu>
                 </SidebarGroupContent>
               </CollapsibleContent>
@@ -106,9 +96,9 @@ export function NavMain() {
                     </SidebarMenuItem>
                   </SidebarMenu>
 
-                  <SidebarMenu className="mt-2">
+                  <SidebarMenu className="mt-4">
                     <SidebarMenuItem>
-                      <UserSidebar />
+                      <UserRequests />
                     </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>
