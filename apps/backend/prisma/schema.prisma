@@ -33,6 +33,9 @@ model User {
   FriendRequestSent FriendRequest[] @relation("RequestsSent")
   FriendRequest     FriendRequest[] @relation("RequestsReceived")
 
+  FriendshipSent     Friendship[] @relation("MessageSent")
+  FriendshipReceived Friendship[] @relation("MessageReceived")
+
   @@index([id])
   @@index([username])
   @@index([email])
@@ -55,10 +58,24 @@ model FriendRequest {
   fromUser User @relation("RequestsSent", fields: [fromUserId], references: [id])
 }
 
-model FriendsUsers {
-  id String @id @default(cuid())
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
 }
 
-model Requests {
-  id String @id @default(cuid())
+model Friendship {
+  id      String @id @default(cuid())
+  content String
+
+  senderId String
+  sender   User   @relation("MessageSent", fields: [senderId], references: [id])
+
+  receiverId String
+  receiver   User   @relation("MessageReceived", fields: [receiverId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status MessageStatus @default(SENT)
 }
