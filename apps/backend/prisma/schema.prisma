@@ -20,18 +20,45 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  image     String?
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  bio       String?
-  isOnline  Boolean  @default(false)
+  id                String          @id @default(cuid())
+  username          String          @unique
+  email             String          @unique
+  password          String
+  image             String?
+  role              UserRole        @default(USER)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  bio               String?
+  isOnline          Boolean         @default(false)
+  FriendRequestSent FriendRequest[] @relation("RequestsSent")
+  FriendRequest     FriendRequest[] @relation("RequestsReceived")
 
   @@index([id])
   @@index([username])
   @@index([email])
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model FriendRequest {
+  id         String        @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  status     RequestStatus @default(PENDING)
+
+  toUser User @relation("RequestsReceived", fields: [toUserId], references: [id])
+
+  fromUser User @relation("RequestsSent", fields: [fromUserId], references: [id])
+}
+
+model FriendsUsers {
+  id String @id @default(cuid())
+}
+
+model Requests {
+  id String @id @default(cuid())
 }

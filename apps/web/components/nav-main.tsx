@@ -1,12 +1,6 @@
 "use client";
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -14,7 +8,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 
 import {
@@ -23,9 +16,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronRight, SearchIcon } from "lucide-react";
-import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { FriendSidebar } from "@/components/friend-sidebar";
+import { UserSidebar } from "@/components/user-sidebar";
 
 export function NavMain() {
   return (
@@ -47,11 +41,7 @@ export function NavMain() {
                 <SidebarGroupContent>
                   <SidebarMenu className="mt-4">
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/login" className="font-bold">
-                          Login
-                        </Link>
-                      </SidebarMenuButton>
+                      <FriendSidebar href={"/chat/123"} />
                     </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -84,11 +74,7 @@ export function NavMain() {
 
                   <SidebarMenu className="mt-2">
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/login" className="font-bold">
-                          Login
-                        </Link>
-                      </SidebarMenuButton>
+                      <UserSidebar />
                     </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -122,11 +108,7 @@ export function NavMain() {
 
                   <SidebarMenu className="mt-2">
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link href="/login" className="font-bold">
-                          Login
-                        </Link>
-                      </SidebarMenuButton>
+                      <UserSidebar />
                     </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>

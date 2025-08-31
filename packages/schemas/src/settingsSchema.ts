@@ -4,19 +4,19 @@ export const settingsSchema = z
   .object({
     username: z
       .string()
-      .min(2, "Username must be at least 2 characters")
-      .max(16)
+      .min(2, "Username must be at least 2 characters and max of 8")
+      .max(8)
       .or(z.literal("")), // CLUTCH
 
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters")
+      .min(8, "Password must be at least 8 characters and max of 16")
       .max(16)
       .or(z.literal("")),
     bio: z
       .string()
-      .min(2, "Bio must be at least 2 characters")
-      .max(16)
+      .min(2, "Bio must be at least 2 characters and max of 10")
+      .max(10)
       .or(z.literal("")),
     image: z.instanceof(File).or(z.object()),
     imageUrl: z.url().or(z.literal("")),
