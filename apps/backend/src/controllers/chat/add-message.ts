@@ -1,16 +1,21 @@
 import { prisma } from "@/src/config/prisma";
+import { AddMessageArgs, addMessageSchema } from "@repo/schemas";
 import { Request, Response } from "express";
+
 export async function addChat(req: Request, res: Response) {
-  const data = req.body;
-  const userId = req.user?.userId;
+  const data: AddMessageArgs = req.body;
+  const userId = req.user!.userId;
+
+  const validateData = addMessageSchema.safeParse(data);
+  if (!validateData.success) return res.status(400).json(validateData.error);
 
   try {
     const addChat = await prisma.friendship.create({
       data: {
-        content: data.content,
-        type: data.type || "TEXT",
+        content: validateData.data.content,
+        type: validateData.data.type,
         senderId: userId,
-        receiverId: data.recieverId,
+        receiverId: validateData.data.recieverId,
       },
     });
 
