@@ -1,12 +1,17 @@
-"use client ";
+"use client";
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { UsersSidebar } from "@repo/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSendRequest } from "@/hooks/sidebar";
+import {
+  useAccpectRequest,
+  useRejectRequest,
+  useSendRequest,
+} from "@/hooks/sidebar";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 export const SidebarUser: React.FC<
   UsersSidebar & {
@@ -15,9 +20,18 @@ export const SidebarUser: React.FC<
   }
 > = ({ id, bio, image, username, isRequest = false, isFriend = false }) => {
   const { mutate: sendRequestMutate } = useSendRequest();
+  const { mutate: acceptRequestMutate } = useAccpectRequest();
+  const { mutate: rejectRequestMutate } = useRejectRequest();
 
+  const router = useRouter();
+  console.log(id);
   return (
-    <div className="flex gap-3 items-center">
+    <div
+      className="flex gap-3 items-center"
+      onClick={() => {
+        if (isFriend) router.push(`/chat/${id}`);
+      }}
+    >
       <Avatar className="size-7 rounded">
         {image && <AvatarImage src={image} />}
         <AvatarFallback className="rounded-lg">
@@ -50,10 +64,14 @@ export const SidebarUser: React.FC<
         </Button>
       ) : (
         <div className="ml-auto flex gap-2">
-          <Button size="sm">
+          <Button size="sm" onClick={() => acceptRequestMutate(id)}>
             <IoCheckmarkCircle />
           </Button>
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => rejectRequestMutate(id)}
+          >
             <TrashIcon />
           </Button>
         </div>

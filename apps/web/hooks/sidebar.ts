@@ -5,8 +5,15 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { ListUsersArgs } from "@repo/schemas";
-import { listUsers, sendRequest, listRequests } from "@/lib/data/sidebar";
-import { SendRequestResponse } from "@repo/types";
+import {
+  listUsers,
+  sendRequest,
+  listRequests,
+  rejectRequest,
+  acceptRequest,
+  listFriends,
+} from "@/lib/data/sidebar";
+import { SendRequestResponse, UsersSidebar } from "@repo/types";
 
 export const useListUsers = (values?: ListUsersArgs) => {
   return useQuery({
@@ -24,7 +31,7 @@ export const useListRequests = () => {
 export const useListFriends = () => {
   return useQuery({
     queryKey: ["list-friends"],
-    queryFn: listRequests,
+    queryFn: listFriends,
   });
 };
 
@@ -33,10 +40,41 @@ export const useSendRequest = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["register"],
+    mutationKey: ["send-request"],
     mutationFn: (values: string) => sendRequest(values),
     onSuccess: async (...args) => {
       await queryClient.invalidateQueries({ queryKey: ["list-users"] });
+      await options?.onSuccess?.(...args);
+    },
+    ...options,
+  });
+};
+
+export const useAccpectRequest = (
+  options?: UseMutationOptions<SendRequestResponse, Error, string>
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["accept-request"],
+    mutationFn: (values: string) => acceptRequest(values),
+    onSuccess: async (...args) => {
+      await queryClient.invalidateQueries({ queryKey: ["list-requests"] });
+      await queryClient.invalidateQueries({ queryKey: ["list-friends"] });
+      await options?.onSuccess?.(...args);
+    },
+    ...options,
+  });
+};
+
+export const useRejectRequest = (
+  options?: UseMutationOptions<SendRequestResponse, Error, string>
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["reject-request"],
+    mutationFn: (values: string) => rejectRequest(values),
+    onSuccess: async (...args) => {
+      await queryClient.invalidateQueries({ queryKey: ["list-friends"] });
       await options?.onSuccess?.(...args);
     },
     ...options,

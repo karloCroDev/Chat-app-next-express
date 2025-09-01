@@ -2,7 +2,6 @@
 
 import { cookies } from "next/headers";
 import { type SessionSuccessResponse } from "@repo/types";
-import { revalidateTag } from "next/cache";
 
 export async function serverSession(): Promise<SessionSuccessResponse | null> {
   try {

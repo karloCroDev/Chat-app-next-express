@@ -27,7 +27,7 @@ export async function listFriends(req: Request, res: Response) {
       },
     });
 
-    return friends;
+    return res.status(200).json(friends);
   } catch (error) {
     throw new Error(
       error instanceof Error ? error.message : "Something went wrong"

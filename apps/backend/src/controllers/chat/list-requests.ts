@@ -6,10 +6,12 @@ export async function listRequests(req: Request, res: Response) {
     const requests = await prisma.friendRequest.findMany({
       where: {
         toUserId: req.user!.userId,
+        status: "PENDING",
       },
       include: {
         fromUser: {
           select: {
+            id: true,
             username: true,
             bio: true,
             email: true,

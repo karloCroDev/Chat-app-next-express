@@ -6,7 +6,6 @@ import { SidebarMenuItem } from "@/components/ui/sidebar";
 
 import { useListRequests } from "@/hooks/sidebar";
 import { withReactQueryProvider } from "@/lib/config/react-query";
-import { UsersSidebar } from "@repo/types";
 import { SearchIcon } from "lucide-react";
 import * as React from "react";
 

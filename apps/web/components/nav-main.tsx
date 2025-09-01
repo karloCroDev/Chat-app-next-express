@@ -16,16 +16,16 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { FriendSidebar } from "@/components/friend-sidebar";
 import { AddFriendsMapping } from "@/components/add-friends-mapping";
 import { RequestMapping } from "@/components/request-mapping";
+import { FriendsMapping } from "@/components/friends-mapping";
 
 export function NavMain() {
   return (
     <SidebarGroup>
       <SidebarMenu>
         <SidebarContent className="gap-0">
-          <Collapsible defaultOpen className="group/collapsible">
+          <Collapsible className="group/collapsible">
             <SidebarGroup>
               <SidebarGroupLabel
                 asChild
@@ -39,9 +39,7 @@ export function NavMain() {
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu className="mt-4">
-                    <SidebarMenuItem>
-                      <FriendSidebar href={"/chat/123"} />
-                    </SidebarMenuItem>
+                    <FriendsMapping />
                   </SidebarMenu>
                 </SidebarGroupContent>
               </CollapsibleContent>
