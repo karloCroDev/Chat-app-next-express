@@ -1,6 +1,6 @@
 import { UsersSidebar } from "@repo/types";
 import { SendRequestResponse } from "@repo/types";
-import { ListUsersArgs } from "@repo/schemas";
+import { AcceptRequestArgs, ListUsersArgs } from "@repo/schemas";
 
 export async function listRequests(): Promise<UsersSidebar[]> {
   const response = await fetch("http://localhost:4000/chat/list-requests", {
@@ -44,14 +44,16 @@ export async function listFriends(): Promise<UsersSidebar[]> {
   return await response.json();
 }
 
-export async function acceptRequest(id: string): Promise<SendRequestResponse> {
+export async function acceptRequest(
+  data: AcceptRequestArgs
+): Promise<SendRequestResponse> {
   const response = await fetch("http://localhost:4000/chat/accept-request", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ id }),
+    body: JSON.stringify(data),
   });
 
   return await response.json();

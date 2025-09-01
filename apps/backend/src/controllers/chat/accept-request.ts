@@ -1,18 +1,22 @@
 import { prisma } from "@/src/config/prisma";
+import { AcceptRequestArgs, acceptRequestSchema } from "@repo/schemas";
 import { Request, Response } from "express";
 
 export async function accpetRequest(req: Request, res: Response) {
-  const id: string = req.body.id;
+  const data: AcceptRequestArgs = req.body;
   const userId = req.user!.userId;
 
-  console.log(req.body.id);
-  // if (typeof id !== "string") return res.status(400);
+  const validateData = acceptRequestSchema.safeParse(data);
+
+  if (!validateData.success)
+    return res.status(400).json({ message: validateData.error.message });
+
   try {
     const friendRequest = await prisma.friendRequest.update({
       where: {
         toUserId_fromUserId: {
           toUserId: userId,
-          fromUserId: id,
+          fromUserId: data.id,
         },
       },
       data: {
@@ -24,7 +28,17 @@ export async function accpetRequest(req: Request, res: Response) {
       return res.status(400).json({ message: "Friend request not found" });
     }
 
-    return res.status(200).json({ message: "Friend request not found" });
+    await prisma.friendship.create({
+      data: {
+        content: `${data.username} accepted your friend request. You may now start chat`,
+        senderId: userId,
+        receiverId: data.id,
+      },
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Friends requests successfull and friendsip created" });
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }

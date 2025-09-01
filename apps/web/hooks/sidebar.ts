@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { ListUsersArgs } from "@repo/schemas";
+import { AcceptRequestArgs, ListUsersArgs } from "@repo/schemas";
 import {
   listUsers,
   sendRequest,
@@ -13,7 +13,7 @@ import {
   acceptRequest,
   listFriends,
 } from "@/lib/data/sidebar";
-import { SendRequestResponse, UsersSidebar } from "@repo/types";
+import { SendRequestResponse } from "@repo/types";
 
 export const useListUsers = (values?: ListUsersArgs) => {
   return useQuery({
@@ -51,12 +51,12 @@ export const useSendRequest = (
 };
 
 export const useAccpectRequest = (
-  options?: UseMutationOptions<SendRequestResponse, Error, string>
+  options?: UseMutationOptions<SendRequestResponse, Error, AcceptRequestArgs>
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["accept-request"],
-    mutationFn: (values: string) => acceptRequest(values),
+    mutationFn: (values: AcceptRequestArgs) => acceptRequest(values),
     onSuccess: async (...args) => {
       await queryClient.invalidateQueries({ queryKey: ["list-requests"] });
       await queryClient.invalidateQueries({ queryKey: ["list-friends"] });

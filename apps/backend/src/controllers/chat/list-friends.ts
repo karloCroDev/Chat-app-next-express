@@ -7,16 +7,9 @@ export async function listFriends(req: Request, res: Response) {
     const user = req.user?.userId;
     const friends = await prisma.user.findMany({
       where: {
-        OR: [
-          {
-            FriendRequestSent: {
-              some: { status: "ACCEPTED", toUserId: user },
-            },
-          },
-          {
-            FriendRequest: { some: { status: "ACCEPTED", fromUserId: user } },
-          },
-        ],
+        FriendRequestSent: {
+          some: { status: "ACCEPTED", toUserId: user },
+        },
       },
       select: {
         id: true,

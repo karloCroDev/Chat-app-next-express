@@ -12,6 +12,7 @@ import {
 } from "@/hooks/sidebar";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const SidebarUser: React.FC<
   UsersSidebar & {
@@ -25,11 +26,14 @@ export const SidebarUser: React.FC<
 
   const router = useRouter();
   console.log(id);
+
+  const LinkOrDiv = isFriend ? Link : "div";
   return (
-    <div
+    <LinkOrDiv
+      href={`/chat/${username}`}
       className="flex gap-3 items-center"
       onClick={() => {
-        if (isFriend) router.push(`/chat/${id}`);
+        if (isFriend) router.push(`/chat/${username}`);
       }}
     >
       <Avatar className="size-7 rounded">
@@ -64,7 +68,15 @@ export const SidebarUser: React.FC<
         </Button>
       ) : (
         <div className="ml-auto flex gap-2">
-          <Button size="sm" onClick={() => acceptRequestMutate(id)}>
+          <Button
+            size="sm"
+            onClick={() =>
+              acceptRequestMutate({
+                id,
+                username,
+              })
+            }
+          >
             <IoCheckmarkCircle />
           </Button>
           <Button
@@ -76,6 +88,6 @@ export const SidebarUser: React.FC<
           </Button>
         </div>
       )}
-    </div>
+    </LinkOrDiv>
   );
 };

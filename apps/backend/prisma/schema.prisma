@@ -66,12 +66,17 @@ enum MessageStatus {
   READ
 }
 
-model Friendship {
-  id      String @id @default(cuid())
-  content String
+enum DataType {
+  TEXT
+  IMAGE
+}
 
+model Friendship {
+  id       String   @id @default(cuid())
+  content  String
+  type     DataType @default(TEXT)
   senderId String
-  sender   User   @relation("MessageSent", fields: [senderId], references: [id])
+  sender   User     @relation("MessageSent", fields: [senderId], references: [id])
 
   receiverId String
   receiver   User   @relation("MessageReceived", fields: [receiverId], references: [id])
@@ -80,4 +85,6 @@ model Friendship {
   updatedAt DateTime @updatedAt
 
   status MessageStatus @default(SENT)
+
+  @@unique([senderId, receiverId])
 }

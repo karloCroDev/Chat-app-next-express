@@ -1,3 +1,4 @@
-export * from "@repo/schemas/src/authSchemas";
-export * from "@repo/schemas/src/settingsSchema";
-export * from "@repo/schemas/src/listUsersSchema";
+export * from "@repo/schemas/src/auth-schemas";
+export * from "@repo/schemas/src/settings-schema";
+export * from "@repo/schemas/src/list-users-schema";
+export * from "@repo/schemas/src/accept-request";
