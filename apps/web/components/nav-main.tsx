@@ -14,13 +14,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronRight, SearchIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { FriendSidebar } from "@/components/friend-sidebar";
-import { UserRequests } from "@/components/user-reqeusts";
-import { UserAddFriend } from "@/components/user-add-friend";
 import { AddFriendsMapping } from "@/components/add-friends-mapping";
+import { RequestMapping } from "@/components/request-mapping";
 
 export function NavMain() {
   return (
@@ -88,18 +86,7 @@ export function NavMain() {
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu className="mt-4">
-                    <SidebarMenuItem>
-                      <div className="flex items-center gap-4">
-                        <Input />
-                        <SearchIcon className="size-6" />
-                      </div>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-
-                  <SidebarMenu className="mt-4">
-                    <SidebarMenuItem>
-                      <UserRequests />
-                    </SidebarMenuItem>
+                    <RequestMapping />
                   </SidebarMenu>
                 </SidebarGroupContent>
               </CollapsibleContent>

@@ -9,11 +9,25 @@ import { ListUsersArgs } from "@repo/schemas";
 import { listUsers } from "@/lib/data/list-users";
 import { SendRequestResponse } from "@repo/types";
 import { sendRequest } from "@/lib/data/send-request";
+import { listRequests } from "@/lib/data/list-requests";
 
 export const useListUsers = (values?: ListUsersArgs) => {
   return useQuery({
     queryKey: ["list-users"],
     queryFn: () => listUsers(values),
+  });
+};
+
+export const useListRequests = () => {
+  return useQuery({
+    queryKey: ["list-requests"],
+    queryFn: listRequests,
+  });
+};
+export const useListFriends = () => {
+  return useQuery({
+    queryKey: ["list-friends"],
+    queryFn: listRequests,
   });
 };
 

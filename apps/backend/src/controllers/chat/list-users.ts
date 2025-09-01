@@ -45,6 +45,7 @@ export async function listUsers(req: Request, res: Response) {
         username: true,
         bio: true,
         image: true,
+        isOnline: true,
       },
     });
 

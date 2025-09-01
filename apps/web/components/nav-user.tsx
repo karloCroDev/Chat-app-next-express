@@ -95,6 +95,8 @@ export const NavUser = withReactQueryProvider(
               <DropdownMenuItem
                 onClick={() => {
                   mutate(undefined, {});
+
+                  IRevalidateTag("session");
                 }}
               >
                 <LogOut />

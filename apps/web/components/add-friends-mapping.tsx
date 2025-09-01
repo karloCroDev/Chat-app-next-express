@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { SidebarMenuItem } from "@/components/ui/sidebar";
-import { UserAddFriend } from "@/components/user-add-friend";
+import { SidebarUser } from "@/components/sidebar-user";
 import { useListUsers } from "@/hooks/sidebar";
 import { useDebounce } from "@/hooks/useDebounce";
 import { withReactQueryProvider } from "@/lib/config/react-query";
@@ -40,16 +40,18 @@ export const AddFriendsMapping = withReactQueryProvider(() => {
         </div>
       </SidebarMenuItem>
       <div className="flex flex-col gap-4 mt-4">
-        {listUsers?.map(({ bio, id, image, username }) => (
-          <SidebarMenuItem id={id} key={id}>
-            <UserAddFriend
-              bio={bio}
-              id={id}
-              image={image}
-              username={username}
-            />
-          </SidebarMenuItem>
-        ))}
+        {listUsers &&
+          listUsers.map(({ bio, id, image, username, isOnline }) => (
+            <SidebarMenuItem id={id} key={id}>
+              <SidebarUser
+                bio={bio}
+                id={id}
+                image={image}
+                username={username}
+                isOnline={isOnline}
+              />
+            </SidebarMenuItem>
+          ))}
       </div>
     </>
   );
