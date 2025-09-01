@@ -31,8 +31,8 @@ export const RequestMapping = withReactQueryProvider(() => {
             .filter((val) =>
               val.username.toLowerCase().includes(value.toLowerCase())
             )
-            .map(({ bio, id, image, username, isOnline }) => (
-              <SidebarMenuItem id={id} key={id}>
+            .map(({ bio, id, image, username, isOnline }, i) => (
+              <SidebarMenuItem key={i} id={i.toString()}>
                 <SidebarUser
                   bio={bio}
                   id={id}

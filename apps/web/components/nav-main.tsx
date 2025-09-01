@@ -83,6 +83,7 @@ export function NavMain() {
                   <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                 </CollapsibleTrigger>
               </SidebarGroupLabel>
+
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu className="mt-4">

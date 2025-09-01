@@ -56,6 +56,8 @@ model FriendRequest {
 
   fromUserId String
   fromUser   User   @relation("RequestsSent", fields: [fromUserId], references: [id])
+
+  @@unique([toUserId, fromUserId])
 }
 
 enum MessageStatus {

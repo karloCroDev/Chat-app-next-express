@@ -3,7 +3,6 @@ import { serverSession } from "@/lib/actions/auth";
 
 export default async function SettingsPage() {
   const user = await serverSession();
-  console.log(user);
   return (
     <div className="px-8 py-6">
       <h1 className="text-4xl font-bold ">Settings</h1>

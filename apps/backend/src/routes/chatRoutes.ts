@@ -7,6 +7,8 @@ import { sendRequest } from "@/src/controllers/chat/send-request";
 import { listRequests } from "@/src/controllers/chat/list-requests";
 import { listFriends } from "@/src/controllers/chat/list-friends";
 import multer, { memoryStorage } from "multer";
+import { accpetRequest } from "@/src/controllers/chat/accept-request";
+import { rejectRequest } from "@/src/controllers/chat/reject-request";
 
 const storage = memoryStorage();
 const upload = multer({ storage });
@@ -20,3 +22,5 @@ chatRoutes.post("/list-users", listUsers);
 chatRoutes.get("/list-requests", listRequests);
 chatRoutes.post("/send-request", sendRequest);
 chatRoutes.get("/list-friends", listFriends);
+chatRoutes.post("/accept-request", accpetRequest);
+chatRoutes.post("/reject-request", rejectRequest);

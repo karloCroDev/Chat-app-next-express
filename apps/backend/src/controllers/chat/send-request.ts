@@ -6,19 +6,21 @@ export async function sendRequest(req: Request, res: Response) {
 
   if (typeof reciverId !== "string") return res.status(400);
 
-  const userId = req.user?.userId;
+  const userId = req.user!.userId;
 
   try {
-    await prisma.friendRequest.create({
+    const success = await prisma.friendRequest.create({
       data: {
-        fromUserId: userId!,
+        fromUserId: userId,
         toUserId: reciverId,
         status: "PENDING",
       },
     });
-
+    console.log(success);
     return res.status(200).json({ message: "Request sent", success: true });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong", success: false });
+    throw new Error(
+      error instanceof Error ? error.message : "Something went wrong"
+    );
   }
 }

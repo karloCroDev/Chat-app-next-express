@@ -14,10 +14,10 @@ export const SidebarUser: React.FC<
     isFriend?: boolean;
   }
 > = ({ id, bio, image, username, isRequest = false, isFriend = false }) => {
-  const { mutate } = useSendRequest();
+  const { mutate: sendRequestMutate } = useSendRequest();
 
   return (
-    <div className="flex gap-3 items-center ">
+    <div className="flex gap-3 items-center">
       <Avatar className="size-7 rounded">
         {image && <AvatarImage src={image} />}
         <AvatarFallback className="rounded-lg">
@@ -41,7 +41,7 @@ export const SidebarUser: React.FC<
           className="ml-auto"
           size="sm"
           onClick={() => {
-            mutate(id);
+            sendRequestMutate(id);
 
             console.log("Request sent");
           }}

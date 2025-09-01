@@ -1,21 +1,19 @@
 import { prisma } from "@/src/config/prisma";
 import { Request, Response } from "express";
 
-export async function accpetRequest(req: Request, res: Response) {
+export async function rejectRequest(req: Request, res: Response) {
   const id: string = req.body.id;
   const userId = req.body.userId;
 
   if (typeof id !== "string") return;
+
   try {
-    const friendRequest = await prisma.friendRequest.update({
+    const friendRequest = await prisma.friendRequest.delete({
       where: {
         toUserId_fromUserId: {
           toUserId: userId,
           fromUserId: id,
         },
-      },
-      data: {
-        status: "ACCEPTED",
       },
     });
 

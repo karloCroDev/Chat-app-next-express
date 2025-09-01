@@ -3,7 +3,6 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import { SettingsArgs } from "@repo/schemas";
 import { SettingsResponse } from "@repo/types";
 import { updateUser } from "@/lib/data/settings";
 

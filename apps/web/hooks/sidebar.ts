@@ -4,12 +4,9 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-
 import { ListUsersArgs } from "@repo/schemas";
-import { listUsers } from "@/lib/data/list-users";
+import { listUsers, sendRequest, listRequests } from "@/lib/data/sidebar";
 import { SendRequestResponse } from "@repo/types";
-import { sendRequest } from "@/lib/data/send-request";
-import { listRequests } from "@/lib/data/list-requests";
 
 export const useListUsers = (values?: ListUsersArgs) => {
   return useQuery({

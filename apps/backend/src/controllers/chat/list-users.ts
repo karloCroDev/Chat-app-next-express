@@ -16,28 +16,24 @@ export async function listUsers(req: Request, res: Response) {
   try {
     const users = await prisma.user.findMany({
       where: {
-        id: {
-          not: userId,
-        },
-        FriendRequest: {
-          none: {
-            fromUserId: userId,
-          },
-        },
-        OR: [
+        id: { not: userId },
+        AND: [
           {
-            username: {
-              contains: validateData.data.searchValue || "",
+            FriendRequestSent: {
+              none: { toUserId: userId },
             },
           },
           {
-            bio: {
-              contains: validateData.data.searchValue || "",
+            FriendRequest: {
+              none: { fromUserId: userId },
             },
           },
         ],
+        OR: [
+          { username: { contains: validateData.data.searchValue || "" } },
+          { bio: { contains: validateData.data.searchValue || "" } },
+        ],
       },
-
       take: validateData.data.limit,
       skip: validateData.data.searchValue ? 0 : validateData.data.offset,
       select: {
