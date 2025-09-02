@@ -8,15 +8,21 @@ import { Label } from "@/components/ui/label";
 import { ResizableTextArea } from "@/components/resizable-textarea";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { useAddMessage } from "@/hooks/chat";
+import { withReactQueryProvider } from "@/lib/config/react-query";
+import { IRevalidateTag } from "@/lib/actions/utils";
 
-export const MessageInput: React.FC<React.ComponentPropsWithoutRef<"div">> = ({
-  className,
-  ...rest
-}) => {
+export const MessageInput: React.FC<
+  React.ComponentPropsWithoutRef<"div"> & {
+    recieverId: string;
+  }
+> = withReactQueryProvider(({ recieverId, className, ...rest }) => {
   const [image, setImage] = React.useState<string | null>(null);
 
   const [file, setFile] = React.useState<File | null>(null); // Send to server
   const [message, setMessage] = React.useState("");
+
+  const { mutate } = useAddMessage();
   return (
     <div
       {...rest}
@@ -46,7 +52,26 @@ export const MessageInput: React.FC<React.ComponentPropsWithoutRef<"div">> = ({
             <FileIcon />
           </Label>
         </Button>
-        <Button>
+        <Button
+          onClick={() => {
+            mutate(
+              {
+                content: message,
+                recieverId,
+                type: file ? "IMAGE" : "TEXT", // Handle for right now just so it works but switch to a image
+              },
+              {
+                onSuccess: () => {
+                  IRevalidateTag("chats");
+
+                  setMessage("");
+                  setFile(null);
+                  setImage(null);
+                },
+              }
+            );
+          }}
+        >
           <SendIcon />
         </Button>
         <Input
@@ -66,4 +91,4 @@ export const MessageInput: React.FC<React.ComponentPropsWithoutRef<"div">> = ({
       </div>
     </div>
   );
-};
+});

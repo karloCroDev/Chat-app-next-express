@@ -1,32 +1,56 @@
 import { ChatMessage } from "@/components/chat-message";
 import { MessageInput } from "@/components/message-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { listChat } from "@/lib/actions/chats";
+import { twJoin } from "tailwind-merge";
 
-export default function DmsPage() {
+interface PageProps {
+  params: Promise<{
+    handle: string;
+  }>;
+}
+
+export default async function DmsPage({ params }: PageProps) {
+  const { handle } = await params;
+  const data = await listChat(handle);
+
+  if (!data) return;
+
   return (
     <>
       <div className="border-b w-full flex items-center px-8 py-6 gap-4">
         <Avatar className="size-10 rounded-full">
           <AvatarImage />
-          <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+          <AvatarFallback className="rounded-lg">
+            {data.username
+              .split(" ")
+              .map((item) => item[0]?.toUpperCase())
+              .join()}
+          </AvatarFallback>
         </Avatar>
-        <h4 className="text-2xl  font-semibold">Karlo</h4>
+        <h4 className="text-2xl  font-semibold">{data.username}</h4>
 
-        <div className="rounded-full bg-green-500 size-4 ml-auto" />
-        <p>Online</p>
+        <div
+          className={twJoin(
+            "rounded-full bg-green-500 size-4 ml-auto",
+            data.isOnline ? "bg-green-500 " : "bg-red-500 "
+          )}
+        />
+        <p>{data.isOnline ? "online " : "offline"}</p>
       </div>
 
       <div className="px-8 py-6 flex flex-col gap-4 ">
-        <ChatMessage
-          hasMessageBeSeen
-          variant="outline"
-          message={`Lorem ipsum dolor sit amet consectetur adipisicing elit. A maxime cum
-                magni, corporis nesciunt praesentium asperiores neque. Neque nesciunt
-                deleniti sint quasi labore exercitationem tempora consequuntur soluta
-                repudiandae. Animi, reprehenderi`}
-        />
+        {data.chats.map((chat) => (
+          <ChatMessage
+            key={chat.id}
+            hasMessageBeSeen={chat.status === "READ"}
+            variant={chat.receiverId === data.id ? "primary" : "outline"}
+            message={chat.content}
+            time={new Date(chat.createdAt)}
+          />
+        ))}
 
-        <MessageInput />
+        <MessageInput recieverId={data.id} />
       </div>
     </>
   );

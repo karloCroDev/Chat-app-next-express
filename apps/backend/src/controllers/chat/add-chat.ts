@@ -6,6 +6,7 @@ export async function addChat(req: Request, res: Response) {
   const data: AddMessageArgs = req.body;
   const userId = req.user!.userId;
 
+  console.log(data);
   const validateData = addMessageSchema.safeParse(data);
   if (!validateData.success) return res.status(400).json(validateData.error);
 

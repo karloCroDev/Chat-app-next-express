@@ -47,14 +47,10 @@ export async function listChat(req: Request, res: Response) {
         ],
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: "asc",
       },
     });
-
-    if (!chats)
-      return res.status(400).json({ messgae: "Failure", success: false });
-
-    res.status(200).json({ ...chats, ...user });
+    res.status(200).json({ chats, ...user });
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }

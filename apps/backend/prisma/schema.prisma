@@ -85,6 +85,4 @@ model Friendship {
   updatedAt DateTime @updatedAt
 
   status MessageStatus @default(SENT)
-
-  @@unique([senderId, receiverId])
 }

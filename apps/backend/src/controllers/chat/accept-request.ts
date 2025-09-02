@@ -31,8 +31,8 @@ export async function accpetRequest(req: Request, res: Response) {
     await prisma.friendship.create({
       data: {
         content: `${data.username} accepted your friend request. You may now start chat`,
-        senderId: userId,
-        receiverId: data.id,
+        senderId: data.id,
+        receiverId: userId,
       },
     });
 

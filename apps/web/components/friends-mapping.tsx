@@ -14,7 +14,7 @@ export const FriendsMapping = withReactQueryProvider(() => {
 
   const [value, setValue] = React.useState("");
 
-  if (isLoading) return <p>Loading.sss..</p>;
+  if (isLoading) return <p>Loading...</p>;
 
   console.log(listFriends);
   console.log(isLoading);
