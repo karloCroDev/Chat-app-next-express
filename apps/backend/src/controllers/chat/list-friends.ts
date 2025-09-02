@@ -4,27 +4,27 @@ import { Request, Response } from "express";
 export async function listFriends(req: Request, res: Response) {
   try {
     // Rather make self relation and then add friends, than hadnling like this!
-    const user = req.user?.userId;
+    const userId = req.user!.userId;
     const friends = await prisma.user.findMany({
       where: {
         OR: [
           {
             FriendRequestSent: {
-              some: { status: "ACCEPTED", toUserId: user },
+              some: { status: "ACCEPTED", toUserId: userId },
             },
           },
-          // {
-          //   FriendRequestSent: {
-          //     some: { status: "ACCEPTED", fromUserId: user },
-          //   },
-          // },
+          {
+            FriendRequestRecieved: {
+              some: { status: "ACCEPTED", fromUserId: userId },
+            },
+          },
         ],
       },
       select: {
         id: true,
         username: true,
-        bio: true,
         image: true,
+        bio: true,
         isOnline: true,
       },
     });
