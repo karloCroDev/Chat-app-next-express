@@ -1,5 +1,7 @@
+import { ChatMapping } from "@/components/chat-mapping";
 import { ChatMessage } from "@/components/chat-message";
 import { MessageInput } from "@/components/message-input";
+import { OnlineStatusChat } from "@/components/online-status-chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { listChat } from "@/lib/actions/chats";
 import { twJoin } from "tailwind-merge";
@@ -30,27 +32,11 @@ export default async function DmsPage({ params }: PageProps) {
         </Avatar>
         <h4 className="text-2xl  font-semibold">{data.username}</h4>
 
-        <div
-          className={twJoin(
-            "rounded-full bg-green-500 size-4 ml-auto",
-            data.isOnline ? "bg-green-500 " : "bg-red-500 "
-          )}
-        />
-        <p>{data.isOnline ? "online " : "offline"}</p>
+        <OnlineStatusChat userId={data.id} />
       </div>
 
       <div className="px-8 py-6 flex flex-col gap-4 ">
-        {data.chats.map((chat) => (
-          <ChatMessage
-            key={chat.id}
-            hasMessageBeSeen={chat.status === "READ"}
-            variant={chat.receiverId === data.id ? "primary" : "outline"}
-            message={chat.content}
-            time={new Date(chat.createdAt)}
-          />
-        ))}
-
-        <MessageInput recieverId={data.id} />
+        <ChatMapping initialData={data} username={handle} />
       </div>
     </>
   );

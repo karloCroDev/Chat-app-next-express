@@ -13,7 +13,7 @@ import * as React from "react";
 export const FriendsMapping = withReactQueryProvider(() => {
   const { data: listFriends, isLoading } = useListFriends();
 
-  const { onlineUsers, socketGlobal } = useSocketContext();
+  const { onlineUsers } = useSocketContext();
   const [value, setValue] = React.useState("");
 
   if (isLoading) return <p>Loading...</p>;
