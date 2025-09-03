@@ -3,6 +3,7 @@
 import { SidebarUser } from "@/components/sidebar-user";
 import { Input } from "@/components/ui/input";
 import { SidebarMenuItem } from "@/components/ui/sidebar";
+import { useSocketContext } from "@/hooks/context/SocketContext";
 import { useListFriends } from "@/hooks/sidebar";
 import { withReactQueryProvider } from "@/lib/config/react-query";
 import { UsersSidebar } from "@repo/types";
@@ -12,6 +13,7 @@ import * as React from "react";
 export const FriendsMapping = withReactQueryProvider(() => {
   const { data: listFriends, isLoading } = useListFriends();
 
+  const { onlineUsers, socketGlobal } = useSocketContext();
   const [value, setValue] = React.useState("");
 
   if (isLoading) return <p>Loading...</p>;
@@ -39,7 +41,7 @@ export const FriendsMapping = withReactQueryProvider(() => {
                   id={id}
                   image={image}
                   username={username}
-                  isOnline={isOnline}
+                  isOnline={onlineUsers.includes(id)}
                   isFriend
                 />
               </SidebarMenuItem>

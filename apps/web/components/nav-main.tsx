@@ -6,7 +6,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 import {
@@ -19,8 +18,14 @@ import { Separator } from "@/components/ui/separator";
 import { AddFriendsMapping } from "@/components/add-friends-mapping";
 import { RequestMapping } from "@/components/request-mapping";
 import { FriendsMapping } from "@/components/friends-mapping";
+import { User } from "@repo/types";
+import * as React from "react";
+import { io, SocketOptions } from "socket.io-client";
+import { Socket } from "dgram";
 
 export function NavMain() {
+  // Karlo za inace handleaj ovo sa state mangmentom ili u rootu postavi funkciju koju ces renderati (ovo je zasad zeljeni root). Msm da ne postoji bolji nacin za handleanje ovog!
+
   return (
     <SidebarGroup>
       <SidebarMenu>
