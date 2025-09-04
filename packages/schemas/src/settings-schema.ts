@@ -18,8 +18,12 @@ export const settingsSchema = z
       .min(2, "Bio must be at least 2 characters and max of 10")
       .max(10)
       .or(z.literal("")),
-    image: z.instanceof(File).or(z.object()),
-    imageUrl: z.url().or(z.literal("")),
+    image: z.object({
+      filename: z.string(),
+      contentType: z.string(),
+      size: z.number(),
+    }),
+    deleteImage: z.url().or(z.literal("")),
   })
   .partial()
   .refine(

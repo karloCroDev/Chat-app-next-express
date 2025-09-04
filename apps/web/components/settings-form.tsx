@@ -34,43 +34,36 @@ export const SettingsForm: React.FC<{
   const { mutate } = useUpdateUser();
 
   const [message, setMessage] = React.useState("");
+  const [currImage, setCurrImage] = React.useState<string | undefined>(image);
+
+  const [file, setFile] = React.useState<File | undefined>(undefined);
 
   const onSubmit = async (data: SettingsArgs) => {
-    const formData = new FormData();
-    if (data.username) formData.append("username", data.username);
-    if (data.password) formData.append("password", data.password);
-    if (data.bio) formData.append("bio", data.bio);
-    if (data.image instanceof File) formData.append("image", data.image);
-    if (data.imageUrl) formData.append("imageUrl", data.imageUrl);
+    mutate(
+      { data, file },
+      {
+        onSuccess: ({ errors, message, success }) => {
+          if (success) {
+            setMessage(message);
+            IRevalidateTag("session");
+            return reset();
+          }
 
-    if (image && data.image instanceof File) formData.append("imageUrl", image);
+          if (!errors) return;
 
-    mutate(formData, {
-      onSuccess: ({ errors, message, success }) => {
-        if (success) {
-          setMessage(message);
-          IRevalidateTag("session");
-          return reset();
-        }
-
-        if (!errors) return;
-
-        // KARLO ja msm da ja ovo sa servera ne trebam handleati ali za svaki slucaj! (Nije lose da je ti)
-        if (errors.username)
-          setError("username", {
-            message: errors.username,
-          });
-        if (errors.password)
-          setError("password", {
-            message: errors.password,
-          });
-      },
-    });
+          // KARLO ja msm da ja ovo sa servera ne trebam handleati ali za svaki slucaj! (Nije lose da je ti)
+          if (errors.username)
+            setError("username", {
+              message: errors.username,
+            });
+          if (errors.password)
+            setError("password", {
+              message: errors.password,
+            });
+        },
+      }
+    );
   };
-
-  const [currImage, setCurrImage] = React.useState<string | null | undefined>(
-    image
-  );
 
   const values = watch();
 
@@ -107,15 +100,20 @@ export const SettingsForm: React.FC<{
 
                   if (!file) return;
 
-                  onChange(file);
+                  onChange({
+                    filename: file.name,
+                    contentType: file.type,
+                    size: file.size,
+                  });
                   setCurrImage(URL.createObjectURL(file));
+                  setFile(file);
                 }}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
 
               {currImage && (
                 <Controller
-                  name="imageUrl"
+                  name="deleteImage"
                   control={control}
                   render={({ field: { onChange } }) => (
                     <Button
@@ -123,7 +121,7 @@ export const SettingsForm: React.FC<{
                       variant="secondary"
                       onClick={() => {
                         onChange(image);
-                        setCurrImage(null);
+                        setCurrImage(undefined);
                       }}
                     >
                       <TrashIcon />
@@ -199,7 +197,7 @@ export const SettingsForm: React.FC<{
             !values.username &&
             !values.bio &&
             !values.image &&
-            !values.imageUrl)
+            !values.deleteImage)
         }
       >
         Update info

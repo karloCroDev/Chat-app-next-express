@@ -1,10 +1,7 @@
 import { ChatMapping } from "@/components/chat-mapping";
-import { ChatMessage } from "@/components/chat-message";
-import { MessageInput } from "@/components/message-input";
 import { OnlineStatusChat } from "@/components/online-status-chat";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { listChat } from "@/lib/actions/chats";
-import { twJoin } from "tailwind-merge";
 
 interface PageProps {
   params: Promise<{
