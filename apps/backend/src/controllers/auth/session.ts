@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "@/src/config/prisma";
 import jwt from "jsonwebtoken";
+import { getImagePresignedUrls } from "@/src/lib/aws-s3-functions";
 
 export async function session(req: Request, res: Response) {
   try {
@@ -36,9 +37,14 @@ export async function session(req: Request, res: Response) {
         success: false,
         message: "User is not logged in",
       });
+
+    const image = user.image && (await getImagePresignedUrls(user.image));
+
+    const response = image ? { ...user, image } : { ...user };
+
     res
       .status(200)
-      .json({ ...user, message: "User is logged in", success: true });
+      .json({ ...response, message: "User is logged in", success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error", success: false });
