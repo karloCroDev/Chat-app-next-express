@@ -4,13 +4,13 @@ import { loginSchema, settingsSchema, SettingsArgs } from "@repo/schemas";
 import { type Response, Request } from "express";
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { s3 } from "@/src/config/aws";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getKeyFromUrl } from "@/src/lib/getKeyFromUrl";
+import { getKeyFromUrl } from "@/src/lib/aws-s3-functions";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3 } from "@/src/config/aws";
 
 export async function settings(req: Request, res: Response) {
-  const file = req.file;
-  const data: SettingsArgs = { ...req.body, image: file };
+  const data: SettingsArgs = { ...req.body };
 
   const validateData = settingsSchema.safeParse(data);
 
@@ -29,14 +29,15 @@ export async function settings(req: Request, res: Response) {
 
   if (validateData.data.bio) payload.bio = validateData.data.bio;
 
-  if (validateData.data.imageUrl) {
+  if (validateData.data.deleteImage) {
     try {
-      const key = getKeyFromUrl(validateData.data.imageUrl);
+      const key = getKeyFromUrl(validateData.data.deleteImage);
       const command = new DeleteObjectCommand({
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
         Key: key,
       });
 
+      // Deleting the image
       const success = await s3.send(command);
 
       console.log(success);
@@ -47,19 +48,22 @@ export async function settings(req: Request, res: Response) {
     }
   }
 
-  if (validateData.data.image && file) {
+  let presignedUrl = "";
+  if (validateData.data.image) {
     try {
-      const imageName = `${Date.now()}_${file.originalname}`;
+      const imageName = `${Date.now()}_${validateData.data.image.filename}`;
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
         Key: imageName,
-        Body: file.buffer,
-        ContentType: file.mimetype,
+        ContentType: validateData.data.image.contentType,
+        ContentLength: validateData.data.image.size,
       });
-      await s3.send(command);
-      const imageUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${imageName}`;
 
-      payload.image = imageUrl;
+      presignedUrl = await getSignedUrl(s3, command, {
+        expiresIn: 300,
+      });
+
+      payload.image = imageName;
     } catch (error) {
       throw new Error("Failed to upload the image");
     }
@@ -72,8 +76,16 @@ export async function settings(req: Request, res: Response) {
     data: payload,
   });
 
-  return res.status(200).json({
+  const response: {
+    success: boolean;
+    message: string;
+    presignedUrl?: string;
+  } = {
     success: true,
     message: "Settings updated successfully",
-  });
+  };
+
+  if (presignedUrl) response.presignedUrl = presignedUrl;
+
+  return res.status(200).json(response);
 }
