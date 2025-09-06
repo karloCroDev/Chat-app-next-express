@@ -4,9 +4,9 @@ export default async function StripePage() {
   return (
     <>
       <h1 className="mt-8 ml-4 text-2xl font-semibold">Select payment</h1>
-      <div className="flex justify-between w-[800px] p-4">
+      <div className="flex justify-between w-[1000px] p-4">
         <PaymentPlans
-          features={["Lorem", "Lorem", "Lorem"]}
+          features={["Lorem", "Lorem", "Lorem", "Ipsum"]}
           price={0}
           isCurrentPlan
         />
