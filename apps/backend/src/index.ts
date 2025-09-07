@@ -6,6 +6,7 @@ import { authMiddleware } from "@/src/middleware/authMiddleware";
 import { adminMiddleware } from "@/src/middleware/adminMiddleware";
 import { chatRoutes } from "@/src/routes/chatRoutes";
 import { server, app } from "@/src/config/socket";
+import { paymentRoutes } from "@/src/routes/paymentRoutes";
 
 app.use(
   cors({
@@ -19,7 +20,7 @@ app.use(cookieParser());
 // Routes
 app.use("/auth", authRoutes);
 app.use("/chat", authMiddleware, chatRoutes);
-
+app.use("/payment", authMiddleware, paymentRoutes);
 // Test
 app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route" });

@@ -7,9 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function stripeWebhook(req: Request, res: Response) {
-
-  const userId = req.user!.userId
-
+  const userId = req.user!.userId;
 
   const sig = req.headers["stripe-signature"];
   if (!sig) {
@@ -32,7 +30,7 @@ export async function stripeWebhook(req: Request, res: Response) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = await stripe.checkout.sessions.retrieve(
-          (event.data.object as Stripe.Checkout.Session).id,
+          event.data.object.id,
           { expand: ["line_items"] }
         );
 
@@ -46,7 +44,7 @@ export async function stripeWebhook(req: Request, res: Response) {
         }
 
         await prisma.user.update({
-          where: { email: customer.email },
+          where: { id: userId },
           data: {
             customerId,
             subscriptionTier: "PREMIUM",
@@ -59,18 +57,21 @@ export async function stripeWebhook(req: Request, res: Response) {
 
       case "customer.subscription.deleted": {
         const subscription = await stripe.subscriptions.retrieve(
-          (event.data.object as Stripe.Subscription).id
+          event.data.object.id
         );
 
         await prisma.user.update({
           where: { customerId: subscription.customer as string },
-          data: { subscriptionTier: 'BASIC', ', priceId: null },
+          data: { subscriptionTier: "BASIC", subscriptionActive: "INACTIVE" },
         });
         break;
       }
 
       case "invoice.payment_failed": {
-        // Optionally revoke access or mark unpaid
+        res.status(400).json({
+          success: false,
+          message: "Invoice payment failed",
+        });
         break;
       }
 

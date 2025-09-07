@@ -46,14 +46,9 @@ model User {
   friendshipSent     Friendship[] @relation("MessageSent")
   friendshipReceived Friendship[] @relation("MessageReceived")
 
-  customerId         String?
+  customerId         String?            @unique
   subscriptionActive SubscriptionActive @default(INACTIVE)
   subscriptionTier   SubscriptionTier   @default(BASIC)
-
-  @@index([id])
-  @@index([username])
-  @@index([email])
-  @@index([customerId])
 }
 
 enum RequestStatus {
