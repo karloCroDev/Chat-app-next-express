@@ -1,102 +1,89 @@
-// import { prisma } from "@/src/config/prisma";
-// import { AcceptRequestArgs, acceptRequestSchema } from "@repo/schemas";
-// import { Request, Response } from "express";
-// import stripe from "stripe";
-// import Stripe from "stripe";
+import { prisma } from "@/src/config/prisma";
+import { Request, Response } from "express";
+import Stripe from "stripe";
 
-// export async function stripeWebhook(req: Request, res: Response) {
-//   const body = req.body;
-//   const signature = req.headers["stripe-signature"];
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-//   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-//   const user = req.user!.userId
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-//   let event: Stripe.Event;
+export async function stripeWebhook(req: Request, res: Response) {
 
-//   // verify Stripe event is legit
-//   try {
-//     event = stripe.webhooks.constructEvent(
-//       body,
-//       signature as string,
-//       webhookSecret
-//     );
-//   } catch (error) {
-//     return res.status(400).send({
-//       success: false,
-//       message: `Webhook error: ${error instanceof Error ? error.message : "Unknown error"}`,
-//     });
-//   }
+  const userId = req.user!.userId
 
-//   const data = event.data;
-//   const eventType = event.type;
 
-//   try {
-//     switch (eventType) {
-//       case "checkout.session.completed": {
-//         // First payment is successful and a subscription is created (if mode was set to "subscription" in ButtonCheckout) ==> Grant access to the product
-//         let user;
-//         const session = await stripe.customer.sessions.retrieve(data.object., {
-//           expand: ["line_items"],
-//         });
-//         const customerId = session?.customer;
-//         const customer = await stripe.customers.retrieve(customerId);
-//         const priceId = session?.line_items?.data[0]?.price.id;
+  const sig = req.headers["stripe-signature"];
+  if (!sig) {
+    return res
+      .status(400)
+      .send({ success: false, message: "Missing signature" });
+  }
 
-//         if (customer.email) {
-//           user = await User.findOne({ email: customer.email });
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    return res.status(400).send({
+      success: false,
+      message: `Webhook error: ${err instanceof Error ? err.message : "Unknown error"}`,
+    });
+  }
 
-//           if (!user) {
-//             user = await User.create({
-//               email: customer.email,
-//               name: customer.name,
-//               customerId,
-//             });
+  try {
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = await stripe.checkout.sessions.retrieve(
+          (event.data.object as Stripe.Checkout.Session).id,
+          { expand: ["line_items"] }
+        );
 
-//             await user.save();
-//           }
-//         } else {
-//           console.error("No user found");
-//           throw new Error("No user found");
-//         }
+        const customerId = session.customer as string;
+        const customer = await stripe.customers.retrieve(customerId);
+        // If I am going to make different payment plans
+        // const priceId = session.line_items?.data[0]?.price?.id ?? null;
 
-//         // Update user data + Grant user access to your product. It's a boolean in the database, but could be a number of credits, etc...
-//         user.priceId = priceId;
-//         user.hasAccess = true;
-//         await user.save();
+        if (!("email" in customer) || !customer.email) {
+          throw new Error("Customer email missing");
+        }
 
-//         // Extra: >>>>> send email to dashboard <<<<
+        await prisma.user.update({
+          where: { email: customer.email },
+          data: {
+            customerId,
+            subscriptionTier: "PREMIUM",
+            subscriptionActive: "ACTIVE",
+          },
+        });
 
-//         break;
-//       }
+        break;
+      }
 
-//       case "customer.subscription.deleted": {
-//         // ❌ Revoke access to the product
-//         // The customer might have changed the plan (higher or lower plan, cancel soon etc...)
-//         const subscription = await stripe.subscriptions.retrieve(
-//           data.object.id
-//         );
-//         const user = await prisma.user.update({
-//           where: {
-//             s
-//           },
-//         });
+      case "customer.subscription.deleted": {
+        const subscription = await stripe.subscriptions.retrieve(
+          (event.data.object as Stripe.Subscription).id
+        );
 
-//         break;
-//       }
+        await prisma.user.update({
+          where: { customerId: subscription.customer as string },
+          data: { subscriptionTier: 'BASIC', ', priceId: null },
+        });
+        break;
+      }
 
-//       case "invoice.payment_failed": {
-//         break;
-//       }
-//       default:
-//         console.log(`Unhandled event type ${eventType}`);
-//       // Unhandled event type
-//     }
-//   } catch (error) {
-//     throw new Error(
-//       "stripe error:" +
-//         (error instanceof Error ? error.message : "Unknown error") +
-//         " | EVENT TYPE: " +
-//         eventType
-//     );
-//   }
-// }
+      case "invoice.payment_failed": {
+        // Optionally revoke access or mark unpaid
+        break;
+      }
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({
+      success: false,
+      message: `Stripe error: ${err instanceof Error ? err.message : "Unknown error"}`,
+    });
+  }
+
+  return res.json({ received: true });
+}

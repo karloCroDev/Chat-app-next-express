@@ -19,6 +19,16 @@ enum UserRole {
   ADMIN
 }
 
+enum SubscriptionActive {
+  ACTIVE
+  INACTIVE
+}
+
+enum SubscriptionTier {
+  BASIC
+  PREMIUM
+}
+
 model User {
   id                    String          @id @default(cuid())
   username              String          @unique
@@ -36,9 +46,14 @@ model User {
   friendshipSent     Friendship[] @relation("MessageSent")
   friendshipReceived Friendship[] @relation("MessageReceived")
 
+  customerId         String?
+  subscriptionActive SubscriptionActive @default(INACTIVE)
+  subscriptionTier   SubscriptionTier   @default(BASIC)
+
   @@index([id])
   @@index([username])
   @@index([email])
+  @@index([customerId])
 }
 
 enum RequestStatus {
@@ -71,16 +86,6 @@ enum DataType {
   IMAGE
 }
 
-enum SubscriptionActive {
-  ACTIVE
-  INACTIVE
-}
-
-enum SubscriptionTier {
-  BASIC
-  PREMIUM
-}
-
 model Friendship {
   id       String   @id @default(cuid())
   content  String
@@ -93,10 +98,6 @@ model Friendship {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  subscriptionId     String
-  subscriptionActive SubscriptionActive @default(INACTIVE)
-  subscriptionTier   SubscriptionTier   @default(BASIC)
 
   status MessageStatus @default(SENT)
 }
