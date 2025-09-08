@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function stripeWebhook(req: Request, res: Response) {
-  const userId = req.user!.userId;
+  // const userId = req.user!.userId;
 
   const sig = req.headers["stripe-signature"];
   if (!sig) {
@@ -44,7 +44,7 @@ export async function stripeWebhook(req: Request, res: Response) {
         }
 
         await prisma.user.update({
-          where: { id: userId },
+          where: { email: customer.email },
           data: {
             customerId,
             subscriptionTier: "PREMIUM",

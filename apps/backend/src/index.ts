@@ -20,7 +20,8 @@ app.use(cookieParser());
 // Routes
 app.use("/auth", authRoutes);
 app.use("/chat", authMiddleware, chatRoutes);
-app.use("/payment", authMiddleware, paymentRoutes);
+app.use("/payment", paymentRoutes);
+
 // Test
 app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route" });

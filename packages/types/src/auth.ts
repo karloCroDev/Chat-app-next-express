@@ -25,6 +25,9 @@ export type User = {
   role: "USER" | "ADMIN";
   createdAt: Date;
   updatedAt: Date;
+
+  subscriptionActive: "ACTIVE" | "INACTIVE";
+  subscriptionTier: "BASIC" | "PREMIUM";
 };
 
 export type SessionSuccessResponse = User & {

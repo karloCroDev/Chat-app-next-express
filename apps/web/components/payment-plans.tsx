@@ -2,8 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { User } from "@repo/types";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { twMerge } from "tailwind-merge";
+
+// const manageSubscription = `https://billing.stripe.com/p/login/test_3cI7sMb8p0ma5dxbMt9ws00?prefilled_email=${user.email}`;
 
 export const PaymentPlans: React.FC<
   React.ComponentPropsWithoutRef<"div"> & {
@@ -11,9 +16,17 @@ export const PaymentPlans: React.FC<
     type?: "Monthly" | "Yearly";
     features: string[];
     isCurrentPlan?: boolean;
+    user: User;
   }
-> = ({ price, type, features, isCurrentPlan = false, className, ...rest }) => {
-  console.log(!!price);
+> = ({
+  price,
+  type,
+  features,
+  isCurrentPlan = false,
+  user,
+  className,
+  ...rest
+}) => {
   return (
     <div
       {...rest}
@@ -34,7 +47,22 @@ export const PaymentPlans: React.FC<
           </li>
         ))}
       </ul>
-      {!isCurrentPlan && <Button>Change plan</Button>}
+      {!isCurrentPlan && (
+        <Button>
+          <Link
+            target="_blank"
+            href={
+              // This is for test purposes only. Add urls for development!
+              (type === "Monthly"
+                ? "https://buy.stripe.com/test_3cI7sMb8p0ma5dxbMt9ws00"
+                : "https://buy.stripe.com/test_cNi9AUekB7OCgWfbMt9ws01") +
+              `?prefilled_email=${user.email}`
+            }
+          >
+            Change plan
+          </Link>
+        </Button>
+      )}
     </div>
   );
 };
