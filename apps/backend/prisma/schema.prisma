@@ -19,14 +19,15 @@ enum UserRole {
   ADMIN
 }
 
-enum SubscriptionActive {
-  ACTIVE
-  INACTIVE
-}
-
 enum SubscriptionTier {
   BASIC
   PREMIUM
+}
+
+enum SubscriptionType {
+  NONE
+  MONTHLY
+  YEARLY
 }
 
 model User {
@@ -46,9 +47,9 @@ model User {
   friendshipSent     Friendship[] @relation("MessageSent")
   friendshipReceived Friendship[] @relation("MessageReceived")
 
-  customerId         String?            @unique
-  subscriptionActive SubscriptionActive @default(INACTIVE)
-  subscriptionTier   SubscriptionTier   @default(BASIC)
+  customerId       String?          @unique
+  subscriptionTier SubscriptionTier @default(BASIC)
+  subscriptionType SubscriptionType @default(NONE)
 }
 
 enum RequestStatus {

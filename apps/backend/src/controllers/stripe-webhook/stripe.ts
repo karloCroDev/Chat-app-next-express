@@ -1,4 +1,5 @@
 import { prisma } from "@/src/config/prisma";
+import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import Stripe from "stripe";
 
@@ -7,12 +8,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function stripeWebhook(req: Request, res: Response) {
-  // const userId = req.user!.userId;
-
   const sig = req.headers["stripe-signature"];
+
   if (!sig) {
     return res
-      .status(400)
+      .status(4023)
       .send({ success: false, message: "Missing signature" });
   }
 
@@ -20,7 +20,8 @@ export async function stripeWebhook(req: Request, res: Response) {
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
-    return res.status(400).send({
+    console.log(err);
+    return res.status(403).send({
       success: false,
       message: `Webhook error: ${err instanceof Error ? err.message : "Unknown error"}`,
     });
@@ -37,7 +38,23 @@ export async function stripeWebhook(req: Request, res: Response) {
         const customerId = session.customer as string;
         const customer = await stripe.customers.retrieve(customerId);
         // If I am going to make different payment plans
-        // const priceId = session.line_items?.data[0]?.price?.id ?? null;
+        // const priceId = session.line_items?.data[0]?.price?.id ?? null
+        //
+
+        const stripeTypes =
+          session.line_items?.data[0]?.price?.recurring?.interval;
+
+        let subscriptionType: User["subscriptionType"];
+        switch (stripeTypes) {
+          case "year":
+            subscriptionType = "YEARLY";
+            break;
+          case "month":
+            subscriptionType = "MONTHLY";
+            break;
+          default:
+            subscriptionType = "NONE";
+        }
 
         if (!("email" in customer) || !customer.email) {
           throw new Error("Customer email missing");
@@ -48,7 +65,7 @@ export async function stripeWebhook(req: Request, res: Response) {
           data: {
             customerId,
             subscriptionTier: "PREMIUM",
-            subscriptionActive: "ACTIVE",
+            subscriptionType, // Need to set subscription
           },
         });
 
@@ -62,7 +79,7 @@ export async function stripeWebhook(req: Request, res: Response) {
 
         await prisma.user.update({
           where: { customerId: subscription.customer as string },
-          data: { subscriptionTier: "BASIC", subscriptionActive: "INACTIVE" },
+          data: { subscriptionTier: "BASIC", subscriptionType: "NONE" },
         });
         break;
       }

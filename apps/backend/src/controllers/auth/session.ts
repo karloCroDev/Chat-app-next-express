@@ -29,6 +29,8 @@ export async function session(req: Request, res: Response) {
         role: true,
         createdAt: true,
         updatedAt: true,
+        subscriptionTier: true,
+        subscriptionType: true,
       },
     });
 

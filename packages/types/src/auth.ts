@@ -26,8 +26,8 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
 
-  subscriptionActive: "ACTIVE" | "INACTIVE";
   subscriptionTier: "BASIC" | "PREMIUM";
+  subscriptionType: "NONE" | "MONTHLY" | "YEARLY";
 };
 
 export type SessionSuccessResponse = User & {
