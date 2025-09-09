@@ -18,7 +18,7 @@ export default async function ChatLayout({
 }) {
   const user = await serverSession();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/auth/login");
 
   return (
     <SocketContextProvider>

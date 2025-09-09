@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   const user = await serverSession();
 
-  if (!user || user.role !== "ADMIN") redirect("/login");
+  if (!user || user.role !== "ADMIN") redirect("/auth/login");
 
   console.log(user);
   const cookieStore = await cookies();

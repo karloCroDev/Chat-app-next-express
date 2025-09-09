@@ -35,7 +35,7 @@ export const LoginForm = withReactQueryProvider(() => {
   const onSubmit = async (data: LoginArgs) => {
     mutate(data, {
       onSuccess: ({ errors, success, message }) => {
-        if (success) return router.push("/chat");
+        if (success) return router.push(`/auth/${data.email}`);
 
         setError("root", {
           message,
@@ -118,7 +118,7 @@ export const LoginForm = withReactQueryProvider(() => {
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link
-                href="/signup"
+                href="/auth/signup"
                 className="underline underline-offset-4 ml-2"
               >
                 Sign up

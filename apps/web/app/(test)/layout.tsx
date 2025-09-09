@@ -8,7 +8,7 @@ export default async function TestLayout({
 }) {
   const user = await serverSession();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/auth/login");
 
   return (
     <div>
