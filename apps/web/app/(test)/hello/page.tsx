@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   const user = await serverSession();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/auth/login");
 
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
