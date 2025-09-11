@@ -15,7 +15,6 @@ import { NavUser } from "@/components/nav-user";
 import { serverSession } from "@/lib/actions/auth";
 import { User } from "@repo/types";
 import Link from "next/link";
-
 // This is sample data.
 
 export async function AppSidebar({
