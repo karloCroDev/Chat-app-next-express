@@ -3,3 +3,6 @@ export * from "@repo/schemas/src/settings-schema";
 export * from "@repo/schemas/src/list-users-schema";
 export * from "@repo/schemas/src/accept-request";
 export * from "@repo/schemas/src/message";
+export * from "@repo/schemas/src/verify-email";
+export * from "@repo/schemas/src/forgot-password";
+export * from "@repo/schemas/src/reset-password";
