@@ -16,17 +16,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ResetPasswordArgs, resetPasswordSchema } from "@repo/schemas";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useResetPassword } from "@/hooks/auth";
+import { withReactQueryProvider } from "@/lib/config/react-query";
 
-export const ResetPasswordForm = () => {
+export const ResetPasswordForm = withReactQueryProvider(() => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const {
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setError,
     register,
-    watch,
   } = useForm<ResetPasswordArgs>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -34,7 +35,29 @@ export const ResetPasswordForm = () => {
     },
   });
 
-  const onSubmit = () => {};
+  const { mutate } = useResetPassword();
+
+  const [successMessage, setSuccessMessage] = React.useState("");
+
+  const onSubmit = (data: ResetPasswordArgs) => {
+    mutate(data, {
+      onSuccess: ({ success, message }) => {
+        if (!success) {
+          return setError("root", {
+            message,
+          });
+        }
+
+        setSuccessMessage(message);
+
+        setTimeout(() => {
+          router.push("/auth/login");
+        }, 2000);
+      },
+    });
+  };
+
+  console.log(errors);
   return (
     <Card className="w-96 ">
       <CardHeader>
@@ -70,8 +93,8 @@ export const ResetPasswordForm = () => {
                   required: "Repeat password is required",
                 })}
               />
-              {errors.password && (
-                <p className="text-red-500">{errors.password.message}</p>
+              {errors.repeatPassword && (
+                <p className="text-red-500">{errors.repeatPassword.message}</p>
               )}
             </div>
             <div className="flex justify-between">
@@ -79,10 +102,13 @@ export const ResetPasswordForm = () => {
               {errors.root && (
                 <p className="text-red-500">{errors.root.message}</p>
               )}
+              {successMessage && (
+                <p className="text-green-500">{successMessage}</p>
+              )}
             </div>
           </div>
         </form>
       </CardContent>
     </Card>
   );
-};
+});

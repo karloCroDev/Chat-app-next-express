@@ -41,6 +41,8 @@ model User {
   updatedAt             DateTime        @updatedAt
   bio                   String?
   isOnline              Boolean         @default(false)
+  resetToken            String?         @unique
+  resetTokenExpireDate  BigInt?
   FriendRequestSent     FriendRequest[] @relation("RequestsSent")
   FriendRequestRecieved FriendRequest[] @relation("RequestsReceived")
 
