@@ -1,9 +1,17 @@
-import { LoginArgs } from "@repo/schemas";
+import {
+  ForgotPasswordArgs,
+  LoginArgs,
+  RegisterArgs,
+  ResetPasswordArgs,
+  VerifyEmailArgs,
+} from "@repo/schemas";
 import {
   SessionSuccessResponse,
   LoginResponse,
   RegisterResponse,
+  SendRequestResponse,
 } from "@repo/types";
+import { Verify } from "crypto";
 
 export async function clientSession(): Promise<SessionSuccessResponse | null> {
   try {
@@ -38,7 +46,7 @@ export async function login(data: LoginArgs): Promise<LoginResponse> {
   }
 }
 
-export async function register(data: LoginArgs): Promise<RegisterResponse> {
+export async function register(data: RegisterArgs): Promise<RegisterResponse> {
   try {
     const response = await fetch("http://localhost:4000/auth/register", {
       method: "POST",
@@ -61,6 +69,64 @@ export async function logout() {
       method: "POST",
       credentials: "include",
     });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export async function forgotPassword(
+  data: ForgotPasswordArgs
+): Promise<SendRequestResponse> {
+  try {
+    const response = await fetch("http://localhost:4000/auth/forgot-password", {
+      method: "POST",
+      credentials: "include",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export async function resetPassword(
+  data: ResetPasswordArgs
+): Promise<SendRequestResponse> {
+  try {
+    const response = await fetch("http://localhost:4000/auth/reset-password", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return await response.json();
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+export async function verifyEmail(
+  data: VerifyEmailArgs
+): Promise<SendRequestResponse> {
+  try {
+    const response = await fetch(
+      "http://localhost:4000/auth/verify-token-otp",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return await response.json();
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
