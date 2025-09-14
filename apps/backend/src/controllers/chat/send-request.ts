@@ -6,7 +6,7 @@ export async function sendRequest(req: Request, res: Response) {
 
   if (typeof reciverId !== "string") return res.status(400);
 
-  const userId = req.user!.userId;
+  const userId = req.user.userId;
 
   try {
     const success = await prisma.friendRequest.create({

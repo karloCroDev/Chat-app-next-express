@@ -43,7 +43,7 @@ authRoutes.get(
     generateTokenAndSetCookie({
       res,
       role: "BASIC",
-      userId: req.user!.userId,
+      userId: req.user.userId,
     });
 
     res.redirect("http://localhost:3000/chat");

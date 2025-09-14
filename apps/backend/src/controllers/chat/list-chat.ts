@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 // Dodaj u url
 export async function listChat(req: Request, res: Response) {
   const username = req.query.username;
-  const userId = req.user!.userId;
+  const userId = req.user.userId;
 
   if (typeof username !== "string") {
     return res

@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 
 export async function addChat(req: Request, res: Response) {
   const data: AddMessageArgs = req.body;
-  const userId = req.user!.userId;
+  const userId = req.user.userId;
 
   console.log(data);
   const validateData = addMessageSchema.safeParse(data);

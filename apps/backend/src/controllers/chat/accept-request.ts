@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 
 export async function accpetRequest(req: Request, res: Response) {
   const data: AcceptRequestArgs = req.body;
-  const userId = req.user!.userId;
+  const userId = req.user.userId;
 
   const validateData = acceptRequestSchema.safeParse(data);
 

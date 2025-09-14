@@ -71,7 +71,7 @@ export async function settings(req: Request, res: Response) {
 
   await prisma.user.update({
     where: {
-      id: req.user!.userId, // Getting from middleware
+      id: req.user.userId, // Getting from middleware
     },
     data: payload,
   });

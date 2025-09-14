@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 declare module "express-serve-static-core" {
   interface Request {
-    user?: {
+    user: {
       userId: string;
       role: "ADMIN" | "USER";
     };

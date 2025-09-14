@@ -11,7 +11,7 @@ export async function listUsers(req: Request, res: Response) {
     return res.status(400);
   }
 
-  const userId = req.user!.userId;
+  const userId = req.user.userId;
 
   try {
     const users = await prisma.user.findMany({

@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 export async function rejectRequest(req: Request, res: Response) {
   const id: string = req.body.id;
-  const userId = req.user!.userId;
+  const userId = req.user.userId;
 
   if (typeof id !== "string") return res.status(400);
 
