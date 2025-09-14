@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Response } from "express";
 
-export async function generateTokenAndSetCookie({
+export function generateTokenAndSetCookie({
   res,
   userId,
   role,
@@ -21,6 +21,8 @@ export async function generateTokenAndSetCookie({
     path: "/", // <--- ensure it’s global
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
+
+  console.log("Success");
 
   return token;
 }

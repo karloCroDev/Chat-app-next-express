@@ -7,6 +7,7 @@ import { adminMiddleware } from "@/src/middleware/adminMiddleware";
 import { chatRoutes } from "@/src/routes/chatRoutes";
 import { server, app } from "@/src/config/socket";
 import { paymentRoutes } from "@/src/routes/paymentRoutes";
+import { oAuthGoogle } from "@/src/config/oAuth-google";
 
 app.use(
   cors({
@@ -18,6 +19,8 @@ app.use(cookieParser());
 
 // Routes
 app.use("/payment", paymentRoutes); // Staviu uvik povise express.json
+
+app.use(oAuthGoogle.initialize());
 
 app.use(express.json());
 app.use("/auth", authRoutes);

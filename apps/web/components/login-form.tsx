@@ -35,7 +35,7 @@ export const LoginForm = withReactQueryProvider(() => {
   const onSubmit = async (data: LoginArgs) => {
     mutate(data, {
       onSuccess: ({ errors, success, message }) => {
-        if (success) return router.push(`/auth/${data.email}`);
+        if (success) return router.push(`/auth/email-otp?email=${data.email}`);
 
         setError("root", {
           message,
@@ -110,7 +110,13 @@ export const LoginForm = withReactQueryProvider(() => {
                 >
                   Login
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button
+                  onClick={() => {
+                    window.location.href = "http://localhost:4000/auth/google";
+                  }}
+                  variant="outline"
+                  className="w-full"
+                >
                   Login with Google
                 </Button>
               </div>

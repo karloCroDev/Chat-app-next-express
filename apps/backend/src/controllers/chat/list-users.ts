@@ -24,7 +24,7 @@ export async function listUsers(req: Request, res: Response) {
             },
           },
           {
-            FriendRequest: {
+            FriendRequestRecieved: {
               none: { fromUserId: userId },
             },
           },

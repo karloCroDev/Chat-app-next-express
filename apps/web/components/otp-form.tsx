@@ -6,11 +6,32 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useVerifyEmail } from "@/hooks/auth";
+import { withReactQueryProvider } from "@/lib/config/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export const OtpForm = () => {
+export const OtpForm = withReactQueryProvider(() => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const { mutate } = useVerifyEmail();
   return (
-    <div className="mx-auto w-96 flex justify-center mt-4">
-      <InputOTP maxLength={6} onChange={(val) => console.log(val)}>
+    <div className="mx-auto w-96 flex items-center mt-4 flex-col">
+      <InputOTP
+        maxLength={6}
+        onChange={(val) => {
+          if (val.length === 6) {
+            mutate(
+              { code: val, email: searchParams.get("email") || "" },
+              {
+                onSuccess: () => {
+                  router.push("/chat");
+                },
+              }
+            );
+          }
+        }}
+      >
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -24,4 +45,4 @@ export const OtpForm = () => {
       </InputOTP>
     </div>
   );
-};
+});

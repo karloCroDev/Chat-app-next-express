@@ -3,7 +3,7 @@ import { LoginArgs, loginSchema } from "@repo/schemas";
 import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";
-import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
+import { verifyUser } from "@/src/lib/verify-user";
 
 export async function login(req: Request, res: Response) {
   try {
@@ -33,12 +33,33 @@ export async function login(req: Request, res: Response) {
     if (!passwordIsValid)
       return res.status(400).json({ message: "Invalid password" });
 
-    generateTokenAndSetCookie({
-      res,
-      userId: user.id,
-      role: user.role,
+    const { success, hashedOtp, message, expireDate } = await verifyUser(
+      validateData.data.email
+    );
+
+    if (!success) {
+      return res.status(400).json({
+        message: message,
+        success: false,
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        email: validateData.data.email,
+      },
+      data: {
+        verificationToken: hashedOtp,
+        verificationTokenExpiresAt: expireDate, // 1 hour
+      },
     });
 
+    if (!updatedUser) {
+      return res
+        .status(400)
+        .json({ message: "Error with email", success: false });
+    }
+    ///
     return res.status(200).json({
       success: true,
       message: "User logged in successfully",
