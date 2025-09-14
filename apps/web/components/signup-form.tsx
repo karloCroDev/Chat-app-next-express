@@ -39,7 +39,7 @@ export const SignupForm = withReactQueryProvider(() => {
   const onSubmit = async (data: RegisterArgs) => {
     mutate(data, {
       onSuccess: ({ errors, success, message }) => {
-        if (success) return router.push("/chat");
+        if (success) return router.push(`/auth/email-otp?email=${data.email}`);
         console.log(data);
         setError("root", {
           message,

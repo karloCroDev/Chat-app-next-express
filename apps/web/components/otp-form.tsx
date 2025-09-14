@@ -9,9 +9,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { useVerifyEmail } from "@/hooks/auth";
 import { withReactQueryProvider } from "@/lib/config/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export const OtpForm = withReactQueryProvider(() => {
   const [value, setValue] = React.useState("");
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const { mutate } = useVerifyEmail();
   return (
@@ -32,7 +36,16 @@ export const OtpForm = withReactQueryProvider(() => {
       <Button
         className="w-full mt-4"
         size="lg"
-        onClick={() => mutate({ code: value })}
+        onClick={() =>
+          mutate(
+            { code: value, email: searchParams.get("email") || "" },
+            {
+              onSuccess: () => {
+                router.push("/chat");
+              },
+            }
+          )
+        }
       >
         Submit
       </Button>

@@ -3,8 +3,7 @@ import { LoginArgs, loginSchema } from "@repo/schemas";
 import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";
-import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
-import { resend } from "@/src/config/resend";
+import { verifyUser } from "@/src/lib/verify-user";
 
 export async function login(req: Request, res: Response) {
   try {
@@ -34,22 +33,15 @@ export async function login(req: Request, res: Response) {
     if (!passwordIsValid)
       return res.status(400).json({ message: "Invalid password" });
 
-    const verificationToken = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    const { success, hashedOtp, message, expireDate } = await verifyUser(
+      validateData.data.email
+    );
 
-    //// Ovo mozda handleaj u funkciji pa returnaj (ima vise smisla jer se koristi u signupu)
-    const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM!,
-      to: validateData.data.email,
-      subject: "Confirm your email address",
-      html: `<p>Your code: ${verificationToken}</p>`, // Karlo dodaj shared components i dodaj react email i ondaj dodaj mail
-    });
-
-    if (error) {
-      return res
-        .status(400)
-        .json({ message: "Error with email", success: false });
+    if (!success) {
+      return res.status(400).json({
+        message: message,
+        success: false,
+      });
     }
 
     const updatedUser = await prisma.user.update({
@@ -57,8 +49,8 @@ export async function login(req: Request, res: Response) {
         email: validateData.data.email,
       },
       data: {
-        verificationToken,
-        verificationTokenExpiresAt: Date.now() + 1 * 60 * 60 * 1000, // 1 hour
+        verificationToken: hashedOtp,
+        verificationTokenExpiresAt: expireDate, // 1 hour
       },
     });
 

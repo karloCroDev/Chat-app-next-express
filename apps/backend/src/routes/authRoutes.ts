@@ -6,7 +6,10 @@ import { logout } from "@/src/controllers/auth/logout";
 import { session } from "@/src/controllers/auth/session";
 import { forgotPassword } from "@/src/controllers/auth/forgot-password";
 import { resetPassword } from "@/src/controllers/auth/reset-password";
-import { verifyTokenOtp } from "@/src/controllers/auth/verify-token-otp";
+import {
+  resetVerifyToken,
+  verifyTokenOtp,
+} from "@/src/controllers/auth/verify-token-otp";
 
 export const authRoutes = Router();
 
@@ -19,3 +22,4 @@ authRoutes.get("/session", session);
 authRoutes.post("/forgot-password", forgotPassword);
 authRoutes.post("/reset-password", resetPassword);
 authRoutes.post("/verify-token-otp", verifyTokenOtp);
+authRoutes.post("/reset-verify-token", resetVerifyToken);

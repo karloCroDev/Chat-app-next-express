@@ -35,7 +35,7 @@ export const LoginForm = withReactQueryProvider(() => {
   const onSubmit = async (data: LoginArgs) => {
     mutate(data, {
       onSuccess: ({ errors, success, message }) => {
-        if (success) return router.push(`/auth/${data.email}`);
+        if (success) return router.push(`/auth/email-otp?email=${data.email}`);
 
         setError("root", {
           message,

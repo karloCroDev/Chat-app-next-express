@@ -1,4 +1,3 @@
-import express from "express";
 import { Request, Response } from "express";
 import {
   registerSchema,
@@ -10,6 +9,7 @@ import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";
 import { resend } from "@/src/config/resend";
+import { verifyUser } from "@/src/lib/verify-user";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -23,31 +23,27 @@ export async function register(req: Request, res: Response) {
       });
     }
 
-    const verificationToken = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    const hashedPassword = bcrypt.hashSync(validateData.data.password, 10);
 
-    const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM!,
-      to: validateData.data.email,
-      subject: "Confirm your email address",
-      html: `<p>Your code: ${verificationToken}</p>`, // Karlo dodaj shared components i dodaj react email i ondaj dodaj mail
-    });
+    console.log(validateData.data.email);
+    const { success, hashedOtp, message, expireDate } = await verifyUser(
+      validateData.data.email
+    );
 
-    if (error) {
-      return res
-        .status(400)
-        .json({ message: "Error with email", success: false });
+    if (!success) {
+      return res.status(400).json({
+        message: message,
+        success: false,
+      });
     }
 
-    const hashedPassword = bcrypt.hashSync(validateData.data.password, 10);
     const user = await prisma.user.create({
       data: {
         username: validateData.data.username,
         email: validateData.data.email,
         password: hashedPassword,
-        verificationToken,
-        verificationTokenExpiresAt: Date.now() + 1 * 60 * 60 * 1000, // 1 hour
+        verificationToken: hashedOtp,
+        verificationTokenExpiresAt: expireDate,
       },
     });
 
