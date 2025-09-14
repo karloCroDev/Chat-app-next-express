@@ -6,11 +6,17 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Button } from "@/components/ui/button";
+import { useVerifyEmail } from "@/hooks/auth";
+import { withReactQueryProvider } from "@/lib/config/react-query";
 
-export const OtpForm = () => {
+export const OtpForm = withReactQueryProvider(() => {
+  const [value, setValue] = React.useState("");
+
+  const { mutate } = useVerifyEmail();
   return (
-    <div className="mx-auto w-96 flex justify-center mt-4">
-      <InputOTP maxLength={6} onChange={(val) => console.log(val)}>
+    <div className="mx-auto w-96 flex items-center mt-4 flex-col">
+      <InputOTP maxLength={6} onChange={(val) => setValue(val)}>
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -22,6 +28,14 @@ export const OtpForm = () => {
           <InputOTPSlot index={5} />
         </InputOTPGroup>
       </InputOTP>
+
+      <Button
+        className="w-full mt-4"
+        size="lg"
+        onClick={() => mutate({ code: value })}
+      >
+        Submit
+      </Button>
     </div>
   );
-};
+});

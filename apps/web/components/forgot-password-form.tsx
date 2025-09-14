@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ForgotPasswordArgs, forgotPasswordSchema } from "@repo/schemas";
@@ -19,13 +18,11 @@ import { useForgotPassword } from "@/hooks/auth";
 import { withReactQueryProvider } from "@/lib/config/react-query";
 
 export const ForgotPasswordForm = withReactQueryProvider(() => {
-  const router = useRouter();
   const {
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setError,
     register,
-    watch,
   } = useForm<ForgotPasswordArgs>({
     resolver: zodResolver(forgotPasswordSchema),
   });

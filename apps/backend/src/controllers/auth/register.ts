@@ -1,5 +1,5 @@
 import express from "express";
-import { Router, Request, Response } from "express";
+import { Request, Response } from "express";
 import {
   registerSchema,
   RegisterArgs,
@@ -9,7 +9,7 @@ import {
 import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";
-import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
+import { resend } from "@/src/config/resend";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -23,12 +23,31 @@ export async function register(req: Request, res: Response) {
       });
     }
 
+    const verificationToken = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    const { error } = await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: validateData.data.email,
+      subject: "Confirm your email address",
+      html: `<p>Your code: ${verificationToken}</p>`, // Karlo dodaj shared components i dodaj react email i ondaj dodaj mail
+    });
+
+    if (error) {
+      return res
+        .status(400)
+        .json({ message: "Error with email", success: false });
+    }
+
     const hashedPassword = bcrypt.hashSync(validateData.data.password, 10);
     const user = await prisma.user.create({
       data: {
         username: validateData.data.username,
         email: validateData.data.email,
         password: hashedPassword,
+        verificationToken,
+        verificationTokenExpiresAt: Date.now() + 1 * 60 * 60 * 1000, // 1 hour
       },
     });
 
@@ -38,12 +57,6 @@ export async function register(req: Request, res: Response) {
         success: false,
       });
     }
-
-    generateTokenAndSetCookie({
-      res,
-      userId: user.id,
-      role: user.role,
-    });
 
     return res.json({
       success: true,

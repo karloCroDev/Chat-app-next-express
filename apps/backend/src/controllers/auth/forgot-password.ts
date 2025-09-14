@@ -38,7 +38,9 @@ export async function forgotPassword(req: Request, res: Response) {
   });
 
   if (error) {
-    return res.status(400).json({ error });
+    return res
+      .status(400)
+      .json({ message: "Error with email", success: false });
   }
 
   res.status(200).json({ message: "Email sent", success: true });

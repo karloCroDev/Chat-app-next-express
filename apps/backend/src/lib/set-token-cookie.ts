@@ -22,5 +22,6 @@ export async function generateTokenAndSetCookie({
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
+  console.log("Success");
   return token;
 }

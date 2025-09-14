@@ -11,7 +11,6 @@ import {
   RegisterResponse,
   SendRequestResponse,
 } from "@repo/types";
-import { Verify } from "crypto";
 
 export async function clientSession(): Promise<SessionSuccessResponse | null> {
   try {
@@ -111,6 +110,7 @@ export async function resetPassword(
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 }
+
 export async function verifyEmail(
   data: VerifyEmailArgs
 ): Promise<SendRequestResponse> {
