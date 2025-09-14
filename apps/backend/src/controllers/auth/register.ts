@@ -1,14 +1,8 @@
 import { Request, Response } from "express";
-import {
-  registerSchema,
-  RegisterArgs,
-  LoginArgs,
-  loginSchema,
-} from "@repo/schemas";
+import { registerSchema, RegisterArgs } from "@repo/schemas";
 import { zodErrorDetecter } from "@/src/lib/zodDetectionError";
 import bcrypt from "bcrypt";
 import { prisma } from "@/src/config/prisma";
-import { resend } from "@/src/config/resend";
 import { verifyUser } from "@/src/lib/verify-user";
 
 export async function register(req: Request, res: Response) {
@@ -28,7 +22,7 @@ export async function register(req: Request, res: Response) {
     console.log(validateData.data.email);
     const { success, hashedOtp, message, expireDate } = await verifyUser(
       validateData.data.email
-    );
+    ); // Sending email before checking if user exists, not ideal, I would send email after creating user in db, so refacotring this function might not be a bad idea!
 
     if (!success) {
       return res.status(400).json({

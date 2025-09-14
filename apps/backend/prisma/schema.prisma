@@ -56,6 +56,21 @@ model User {
   customerId         String?          @unique
   subscriptionTier   SubscriptionTier @default(BASIC)
   subscriptionType   SubscriptionType @default(NONE)
+
+  // Providers information
+  accounts Accounts[]
+}
+
+model Accounts {
+  id           String  @id @default(uuid())
+  provider     String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  userId       String
+  user         User    @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerId])
 }
 
 enum RequestStatus {
