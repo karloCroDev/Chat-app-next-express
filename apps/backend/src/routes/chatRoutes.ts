@@ -1,7 +1,6 @@
 import express from "express";
 import { Router } from "express";
 import { settings } from "@/src/controllers/chat/settings";
-import { authMiddleware } from "@/src/middleware/authMiddleware";
 import { listUsers } from "@/src/controllers/chat/list-users";
 import { sendRequest } from "@/src/controllers/chat/send-request";
 import { listRequests } from "@/src/controllers/chat/list-requests";

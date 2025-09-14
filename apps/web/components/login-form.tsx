@@ -110,7 +110,13 @@ export const LoginForm = withReactQueryProvider(() => {
                 >
                   Login
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button
+                  onClick={() => {
+                    window.location.href = "http://localhost:4000/auth/google";
+                  }}
+                  variant="outline"
+                  className="w-full"
+                >
                   Login with Google
                 </Button>
               </div>

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Response } from "express";
 
-export async function generateTokenAndSetCookie({
+export function generateTokenAndSetCookie({
   res,
   userId,
   role,
@@ -23,5 +23,6 @@ export async function generateTokenAndSetCookie({
   });
 
   console.log("Success");
+
   return token;
 }

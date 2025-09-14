@@ -10,6 +10,8 @@ import {
   resetVerifyToken,
   verifyTokenOtp,
 } from "@/src/controllers/auth/verify-token-otp";
+import { generateTokenAndSetCookie } from "@/src/lib/set-token-cookie";
+import { oAuthGoogle } from "@/src/config/oAuth-google";
 
 export const authRoutes = Router();
 
@@ -23,3 +25,27 @@ authRoutes.post("/forgot-password", forgotPassword);
 authRoutes.post("/reset-password", resetPassword);
 authRoutes.post("/verify-token-otp", verifyTokenOtp);
 authRoutes.post("/reset-verify-token", resetVerifyToken);
+authRoutes.get(
+  "/google",
+  oAuthGoogle.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  })
+);
+
+authRoutes.get(
+  "/google/callback",
+  oAuthGoogle.authenticate("google", {
+    failureRedirect: "http://localhost:3000/auth/login",
+    session: false,
+  }),
+  (req, res) => {
+    generateTokenAndSetCookie({
+      res,
+      role: "BASIC",
+      userId: req.user!.userId,
+    });
+
+    res.redirect("http://localhost:3000/chat");
+  }
+);

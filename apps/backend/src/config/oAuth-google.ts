@@ -5,7 +5,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
-passport.use(
+export const oAuthGoogle = passport.use(
   new GoogleStrategy(
     {
       clientID: GOOGLE_CLIENT_ID,
@@ -44,24 +44,14 @@ passport.use(
           )
             return done(null, false);
 
-          // Karlo: Ako bude nesto za updateadti onda upsertaj
-          // user = await prisma.user.upsert({
-          //   where: { email: profile.emails?.[0]?.value || "" },
-          //   update: {},
-          //   create: {
-          //     email: profile.emails[0].value,
-          //     username: profile.displayName,
-          //     image: profile.photos?.[0].value,
-          //     password: "", // or generate a random string if needed
-          //   },
-          // });
-
-          user = await prisma.user.create({
-            data: {
+          user = await prisma.user.upsert({
+            where: { email: profile.emails?.[0]?.value || "" },
+            update: {},
+            create: {
               email: profile.emails[0].value,
               username: profile.displayName,
               image: profile.photos?.[0].value,
-              password: "", // or gen
+              password: "", // or generate a random string if needed
             },
           });
 
@@ -76,7 +66,10 @@ passport.use(
           });
         }
 
-        return done(null, user);
+        return done(null, {
+          userId: user.id,
+          role: user.role,
+        });
       } catch (err) {
         return done(err);
       }
